@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 public class KeygeneratorService {
 
 
-
-
     public SignatureAlgorithm getAnEncryptionAlgorithm() {
         int num = (int) (Math.random() * 7d);
         switch(num) {

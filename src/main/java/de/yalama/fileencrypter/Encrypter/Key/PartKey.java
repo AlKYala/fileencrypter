@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 
 import java.io.Serializable;
+import javax.crypto.Cipher;
+import F
 
 @Getter
 @Setter
@@ -22,13 +24,27 @@ public class PartKey implements Serializable {
      * The Algorithm that sits on top of the part encrypted
      * key
      */
-    private SignatureAlgorithm encryptionAlgorithm;
+    private String encryptionAlgorithm;
     /**
      * The final key
      */
+    private String encryptedPart;
+
     private String key;
 
     protected PartKey() {
         this.encryptionAlgorithm = this.keygeneratorService.getAnEncryptionAlgorithm();
+    }
+
+    public void encryptAndStore(String partKey) {
+        int finalIndex = (partKey.length()-1 > 100) ? 100 : partKey.length()-1;
+        this.key = String.format("Amogus%sSus%d", partKey.substring(0, finalIndex), partKey.hashCode());
+
+
+    }
+
+    public String decrypt() {
+        //TODO
+        return "";
     }
 }
