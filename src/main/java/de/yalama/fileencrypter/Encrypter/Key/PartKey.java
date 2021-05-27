@@ -7,8 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 
 import java.io.Serializable;
+import java.security.NoSuchAlgorithmException;
 import javax.crypto.Cipher;
-import F
+import javax.crypto.NoSuchPaddingException;
 
 @Getter
 @Setter
@@ -17,14 +18,11 @@ import F
  */
 public class PartKey implements Serializable {
 
-    @Autowired
-    private KeygeneratorService keygeneratorService;
-
     /**
      * The Algorithm that sits on top of the part encrypted
      * key
      */
-    private String encryptionAlgorithm;
+    private String[] encryptionInformation;
     /**
      * The final key
      */
@@ -32,14 +30,25 @@ public class PartKey implements Serializable {
 
     private String key;
 
-    protected PartKey() {
-        this.encryptionAlgorithm = this.keygeneratorService.getAnEncryptionAlgorithm();
+    private Encrypter encrypter;
+
+    //package Private
+    PartKey(String key) throws NoSuchPaddingException, NoSuchAlgorithmException {
+        this.encryptionInformation = KeySelector.getRandomEncryptionAlgorithm();
+        this.setKey(key);
+        this.initEncrypter(this.encryptionInformation, this.key);
     }
 
-    public void encryptAndStore(String partKey) {
-        int finalIndex = (partKey.length()-1 > 100) ? 100 : partKey.length()-1;
-        this.key = String.format("Amogus%sSus%d", partKey.substring(0, finalIndex), partKey.hashCode());
+    private void setKey(String keyToUse) {
+        int lengthToUse = (keyToUse.length() < 100) ? keyToUse.length() : 100;
+        this.key = String.format("Amogus%sSus%d", keyToUse.substring(0, lengthToUse), keyToUse.hashCode());
+    }
 
+    private void initEncrypter(String[] encryptionInformation, String key) throws NoSuchAlgorithmException, NoSuchPaddingException {
+        this.encrypter = new Encrypter(encryptionInformation, key);
+    }
+
+    public void encryptAndStore(String toEncrypt) {
 
     }
 

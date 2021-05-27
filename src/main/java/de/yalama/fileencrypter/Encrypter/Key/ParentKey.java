@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.crypto.NoSuchPaddingException;
 import java.io.Serializable;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @Getter
@@ -14,8 +16,8 @@ public class ParentKey implements Serializable {
 
     private List<PartKey> partKeys;
 
-    private void encryptAndStoreValue(String value) {
-        PartKey partKey = new PartKey();
+    private void encryptAndStoreValue(String key, String value) throws NoSuchAlgorithmException, NoSuchPaddingException {
+        PartKey partKey = new PartKey(key);
         int sum = 0;
         while(sum < value.length()) {
             int howMuchOfTheValueIsEncrypted = (int) (Math.random() * 5000d);
@@ -23,7 +25,7 @@ public class ParentKey implements Serializable {
             String subStringToEncrypt = value.substring(sum, sum+howMuchOfTheValueIsEncrypted);
             partKey.encryptAndStore(subStringToEncrypt);
             this.partKeys.add(partKey);
-            partKey = new PartKey();
+            partKey = new PartKey(key);
             sum += howMuchOfTheValueIsEncrypted;
         }
     }
