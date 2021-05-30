@@ -1,4 +1,4 @@
-package de.yalama.fileencrypter.Encrypter.Key;
+package de.yalama.fileencrypter.Util;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;

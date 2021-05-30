@@ -1,4 +1,4 @@
-package de.yalama.fileencrypter.FileUtil;
+package de.yalama.fileencrypter.Util;
 
 import java.io.File;
 import java.io.FileInputStream;

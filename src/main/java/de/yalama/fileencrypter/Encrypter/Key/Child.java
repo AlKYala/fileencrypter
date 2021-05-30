@@ -1,9 +1,8 @@
 package de.yalama.fileencrypter.Encrypter.Key;
 
-import lombok.Getter;
+import de.yalama.fileencrypter.Util.CryptoUtil;
 import lombok.Setter;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.security.*;
 import javax.crypto.BadPaddingException;
