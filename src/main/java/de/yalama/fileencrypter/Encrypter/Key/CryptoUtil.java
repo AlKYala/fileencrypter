@@ -10,10 +10,13 @@ import java.security.*;
 
 public class CryptoUtil implements Serializable {
 
-    public static byte[] encryptString(String input, PublicKey publicKey) throws InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, IllegalBlockSizeException {
+    public static byte[] encrypt(String input, PublicKey publicKey) throws InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, IllegalBlockSizeException {
+        return CryptoUtil.encrypt(input.getBytes(StandardCharsets.UTF_8), publicKey);
+    }
+
+    public static byte[] encrypt(byte[] input, PublicKey publicKey) throws InvalidKeyException, NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, IllegalBlockSizeException {
         Cipher encrypter = CryptoUtil.getRSACipher(Cipher.ENCRYPT_MODE, publicKey);
-        byte[] encryptedBytes = CryptoUtil.getEncryptedBytes(input.getBytes(StandardCharsets.UTF_8), encrypter);
-        return encryptedBytes;
+        return CryptoUtil.getEncryptedBytes(input, encrypter);
     }
 
     private static byte[] getEncryptedBytes(byte[] inputByteArray, Cipher encrypter) throws BadPaddingException, IllegalBlockSizeException {
