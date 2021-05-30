@@ -1,11 +1,13 @@
 package de.yalama.fileencrypter.Encrypter.Key;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.Serializable;
+import java.security.InvalidKeyException;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -13,7 +15,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@NoArgsConstructor
 public class Parent implements Serializable {
 
     private List<Child> children;
@@ -25,25 +26,30 @@ public class Parent implements Serializable {
         this.generator.initialize(2048);
     }
 
-    private void encryptAndStoreValue(String key, String value) throws NoSuchAlgorithmException, NoSuchPaddingException {
-        /*Child child = new Child(key);
+    public void encryptAndStoreValue(String value, double partLength) throws NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, InvalidKeyException, IllegalBlockSizeException {
+        Child child = new Child(this.generator);
         int sum = 0;
         while(sum < value.length()) {
-            int howMuchOfTheValueIsEncrypted = (int) (Math.random() * 5000d);
-            howMuchOfTheValueIsEncrypted = (sum+howMuchOfTheValueIsEncrypted > value.length() -1) ? value.length()-1 - sum : howMuchOfTheValueIsEncrypted;
+            int howMuchOfTheValueIsEncrypted = (int) (Math.random() * partLength);
+            howMuchOfTheValueIsEncrypted = (sum+howMuchOfTheValueIsEncrypted > value.length()) ? value.length()-(sum) : howMuchOfTheValueIsEncrypted;
+
             String subStringToEncrypt = value.substring(sum, sum+howMuchOfTheValueIsEncrypted);
             child.encryptAndStore(subStringToEncrypt);
             this.children.add(child);
-            child = new Child(key);
+            child = new Child(this.generator);
             sum += howMuchOfTheValueIsEncrypted;
-        }*/
+        }
     }
 
-    private String decrypt() {
-        /*StringBuilder sb = new StringBuilder();
+    public void encryptAndStoreValue(String value) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException {
+        this.encryptAndStoreValue(value, 5000d);
+    }
+
+    private String decrypt() throws InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {
+        StringBuilder sb = new StringBuilder();
         for(Child child : children) {
             sb.append(child.decrypt());
         }
-        return sb.toString();*/
+        return sb.toString();
     }
 }
