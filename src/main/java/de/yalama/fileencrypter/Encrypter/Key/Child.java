@@ -28,7 +28,11 @@ public class Child implements Serializable {
     }
 
     void encryptAndStore(String toEncrypt) throws NoSuchAlgorithmException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException {
-        this.encryptedPart = CryptoUtil.encryptString(toEncrypt, keyPair.getPublic());
+        this.encryptedPart = CryptoUtil.encrypt(toEncrypt, keyPair.getPublic());
+    }
+
+    void encryptAndStore(byte[] toEnCrypt) throws NoSuchAlgorithmException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException {
+        this.encryptedPart = CryptoUtil.encrypt(toEnCrypt, keyPair.getPublic());
     }
 
     String decrypt() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
