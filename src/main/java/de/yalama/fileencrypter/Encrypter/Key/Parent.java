@@ -11,11 +11,10 @@ import javax.crypto.NoSuchPaddingException;
 import java.io.File;
 import java.io.Serializable;
 import java.security.InvalidKeyException;
+import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Getter
 @Setter
@@ -78,6 +77,31 @@ public class Parent implements Serializable {
         this.encryptAndStoreValue(value, 5000d);
     }
 
+    private Map<Integer, KeyPair> extractKeyPairOfChildren() throws KeyPairNotFoundException {
+        Map<Integer, KeyPair> keyPairMap = new HashMap<Integer, KeyPair>();
+        for(int i = 0; i < children.size(); i++) {
+            if(children.get(i).getKeyPair() == null) {
+                throw new KeyPairNotFoundException("Keypair of child not found - probably deleted already");
+            }
+            keyPairMap.put(i, children.get(i).getKeyPair());
+        }
+        return keyPairMap;
+    }
+
+    private void setKeyPairOfChildrenToNull() {
+        for(Child c: children) {
+            c.removeKeyPair();
+        }
+    }
+
+    private void extractKeyMap(String path) {
+        //TODO Keypair to file then remove keypairs in children
+    }
+
+    private void extractParent() {
+        //TODO extract keypair then Parent
+    }
+
     private String decrypt() throws InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {
         StringBuilder sb = new StringBuilder();
         for(Child child : children) {
@@ -86,3 +110,11 @@ public class Parent implements Serializable {
         return sb.toString();
     }
 }
+
+/**
+ * VERY IMPORTANT: WHEN EXPORTING PARENT, THE KEYPAIR OF CHILDREN IS SET NULL!!!
+ * A MAP OF KEYPAIRS IS SAVED SEPERATELY TO A FILE WITH CONTENT
+ * <Integer, Keypair> - the key says which child has what keypair!
+ *
+ * When writing to a file, first the keypair is extracted then the parent
+ */
