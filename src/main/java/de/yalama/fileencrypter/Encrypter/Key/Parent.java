@@ -1,5 +1,7 @@
 package de.yalama.fileencrypter.Encrypter.Key;
 
+import de.yalama.fileencrypter.Encrypter.Exceptions.InsecureExtractionException;
+import de.yalama.fileencrypter.Encrypter.Exceptions.KeyPairNotFoundException;
 import de.yalama.fileencrypter.Encrypter.FileHandler.FileHandler;
 import de.yalama.fileencrypter.Util.FileUtil;
 import lombok.Getter;
@@ -8,8 +10,7 @@ import lombok.Setter;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import java.io.File;
-import java.io.Serializable;
+import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -77,7 +78,61 @@ public class Parent implements Serializable {
         this.encryptAndStoreValue(value, 5000d);
     }
 
-    private Map<Integer, KeyPair> extractKeyPairOfChildren() throws KeyPairNotFoundException {
+
+    /**
+     * first extracts the keypairMap to a seperate file, then clears the keyPair from all children
+     * for safety reasons then extracts the parent
+     * @param mapFileName The filename for the map
+     * @param parentFileName The filename for the parent
+     */
+    public void extractAll(String mapFileName, String parentFileName) throws IOException, KeyPairNotFoundException, InsecureExtractionException {
+        //TODO extract keypair then Parent
+        this.extractKeyMap(mapFileName);
+        this.clearKeyPairsOfChildren();
+        this.extractParent(parentFileName);
+    }
+
+    /**
+     * Method to extract this instance but checks if this instance children has no keypair saved for
+     * safety reasons
+     * @param fileName the filename for this instance
+     * @throws IOException
+     */
+    private void extractParent(String fileName) throws IOException, InsecureExtractionException {
+        if(!this.checkChildrenAllClear()) {
+            throw new InsecureExtractionException("This instance has children with keypair instances left. Cannot extract for safety reasons");
+        }
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(fileName);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(this);
+            objectOutputStream.close();
+            fileOutputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Checks if all children have no keyPair left. Important for extraction of Parent instance
+     * @return false if one child with not null keyPair member exists
+     */
+    private boolean checkChildrenAllClear() {
+        for(Child c : children) {
+            if(c.getKeyPair() != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Creates a map where keyPair Objects are indexed by what Index the corresponding child object is saved in Parent::children
+     * @return a Map<Integer, KeyMap> objected implemented in HashMap, see description.
+     * @throws KeyPairNotFoundException thrown when a child object with no keyPair is found - which only happens if a child object keyMap is cleared
+     */
+    private Map<Integer, KeyPair> getKeyPairOfChildren() throws KeyPairNotFoundException {
         Map<Integer, KeyPair> keyPairMap = new HashMap<Integer, KeyPair>();
         for(int i = 0; i < children.size(); i++) {
             if(children.get(i).getKeyPair() == null) {
@@ -88,18 +143,31 @@ public class Parent implements Serializable {
         return keyPairMap;
     }
 
-    private void setKeyPairOfChildrenToNull() {
+    private void clearKeyPairsOfChildren() {
         for(Child c: children) {
             c.removeKeyPair();
         }
     }
 
-    private void extractKeyMap(String path) {
+    /**
+     * Extracts the keyMap specified in Parent::getPairOfChildren to a File
+     * @param fileName The filename
+     * @throws IOException
+     * @throws KeyPairNotFoundException
+     */
+    private void extractKeyMap(String fileName) throws IOException, KeyPairNotFoundException {
         //TODO Keypair to file then remove keypairs in children
-    }
-
-    private void extractParent() {
-        //TODO extract keypair then Parent
+        FileOutputStream fileOutputStream = null;
+        Map<Integer, KeyPair> childrenKeyPair = this.getKeyPairOfChildren();
+        try {
+            fileOutputStream = new FileOutputStream(String.format("%s.map", fileName));
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(childrenKeyPair);
+            objectOutputStream.close();
+            fileOutputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private String decrypt() throws InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {

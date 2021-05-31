@@ -1,4 +1,4 @@
-package de.yalama.fileencrypter.Encrypter.Key;
+package de.yalama.fileencrypter.Encrypter.Exceptions;
 
 public class KeyPairNotFoundException extends Exception{
 
