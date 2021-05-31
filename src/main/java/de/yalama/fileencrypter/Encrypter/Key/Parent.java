@@ -11,10 +11,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.*;
-import java.security.InvalidKeyException;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 import java.util.*;
 
 @Getter
@@ -77,7 +74,6 @@ public class Parent implements Serializable {
     public void encryptAndStoreValue(String value) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException {
         this.encryptAndStoreValue(value, 5000d);
     }
-
 
     /**
      * first extracts the keypairMap to a seperate file, then clears the keyPair from all children
@@ -168,6 +164,16 @@ public class Parent implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Method to load the keyMapFile and assign the child instances in Parent::children their instances
+     * @param keyMapFile
+     */
+    public void loadKeyMap(File keyMapFile) throws FileNotFoundException {
+        FileInputStream fileInputStream = new FileInputStream(keyMapFile);
+        Map<Integer, KeyPair> keyPairMap = new HashMap<Integer, KeyPair>();
+        //TODO load conents of file
     }
 
     private String decrypt() throws InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {
