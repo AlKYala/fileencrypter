@@ -18,14 +18,24 @@ import java.util.*;
 @Setter
 public class Parent implements Serializable {
 
+    /**
+     * The generator can be singleton because we dont need n instances of KeyPairGenerator - only one per runtime
+     * KeyPairGenerator is not serializable so this is a good strategy that saves some memory
+     */
+    private static KeyPairGenerator generator;
     private List<Child> children;
-    private KeyPairGenerator generator;
     private FileHandler fileHandler;
 
     public Parent() throws NoSuchAlgorithmException {
         this.children = new ArrayList<Child>();
-        this.generator = KeyPairGenerator.getInstance("RSA");
-        this.generator.initialize(2048);
+        this.initKeyPairGenerator();
+    }
+
+    private void initKeyPairGenerator() throws NoSuchAlgorithmException {
+        if(Parent.generator == null) {
+            generator = KeyPairGenerator.getInstance("RSA");
+            generator.initialize(2048);
+        }
     }
 
     public void encryptFileAndStore(File file, double partLength) throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
@@ -82,7 +92,6 @@ public class Parent implements Serializable {
      * @param parentFileName The filename for the parent
      */
     public void extractAll(String mapFileName, String parentFileName) throws IOException, KeyPairNotFoundException, InsecureExtractionException {
-        //TODO extract keypair then Parent
         this.extractKeyMap(mapFileName);
         this.clearKeyPairsOfChildren();
         this.extractParent(parentFileName);
@@ -114,7 +123,8 @@ public class Parent implements Serializable {
      * Checks if all children have no keyPair left. Important for extraction of Parent instance
      * @return false if one child with not null keyPair member exists
      */
-    private boolean checkChildrenAllClear() {
+    //TODO set private again
+    public boolean checkChildrenAllClear() {
         for(Child c : children) {
             if(c.getKeyPair() != null) {
                 return false;
@@ -152,7 +162,6 @@ public class Parent implements Serializable {
      * @throws KeyPairNotFoundException
      */
     private void extractKeyMap(String fileName) throws IOException, KeyPairNotFoundException {
-        //TODO Keypair to file then remove keypairs in children
         FileOutputStream fileOutputStream = null;
         Map<Integer, KeyPair> childrenKeyPair = this.getKeyPairOfChildren();
         try {
@@ -166,17 +175,30 @@ public class Parent implements Serializable {
         }
     }
 
+    public void loadKeyMap(String filenameWithExtension) throws IOException, ClassNotFoundException {
+        File keyMapFile = new File(filenameWithExtension);
+        this.loadKeyMapData(keyMapFile);
+    }
+
     /**
      * Method to load the keyMapFile and assign the child instances in Parent::children their instances
      * @param keyMapFile
      */
-    public void loadKeyMap(File keyMapFile) throws FileNotFoundException {
+    private void loadKeyMapData(File keyMapFile) throws IOException, ClassNotFoundException {
         FileInputStream fileInputStream = new FileInputStream(keyMapFile);
-        Map<Integer, KeyPair> keyPairMap = new HashMap<Integer, KeyPair>();
-        //TODO load conents of file
+        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+        Map<Integer, KeyPair> keyPairMap = (Map<Integer, KeyPair>) objectInputStream.readObject();
+        //TODO check if this actually works
+        this.feedValuesToChildren(keyPairMap);
     }
 
-    private String decrypt() throws InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {
+    private void feedValuesToChildren(Map<Integer, KeyPair> map) {
+        for(Integer index : map.keySet()) {
+            this.children.get(index).setKeyPair(map.get(index));
+        }
+    }
+
+    public String decrypt() throws InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {
         StringBuilder sb = new StringBuilder();
         for(Child child : children) {
             sb.append(child.decrypt());
