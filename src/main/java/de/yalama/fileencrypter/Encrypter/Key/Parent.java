@@ -31,6 +31,14 @@ public class Parent implements Serializable {
         this.initKeyPairGenerator();
     }
 
+
+    public static Parent loadParent(String parentPath) throws IOException, ClassNotFoundException {
+        File parentFile = new File(parentPath);
+        FileInputStream fileInputStream = new FileInputStream(parentFile);
+        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+        return (Parent) objectInputStream.readObject();
+    }
+
     private void initKeyPairGenerator() throws NoSuchAlgorithmException {
         if(Parent.generator == null) {
             generator = KeyPairGenerator.getInstance("RSA");
@@ -124,7 +132,7 @@ public class Parent implements Serializable {
      * @return false if one child with not null keyPair member exists
      */
     //TODO set private again
-    public boolean checkChildrenAllClear() {
+    private boolean checkChildrenAllClear() {
         for(Child c : children) {
             if(c.getKeyPair() != null) {
                 return false;
