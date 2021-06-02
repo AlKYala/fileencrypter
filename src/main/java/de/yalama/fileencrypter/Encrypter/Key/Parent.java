@@ -58,6 +58,7 @@ public class Parent implements Serializable {
 
     public void encryptAndStoreValue(byte[] value, double partLength, String fileExtension) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException {
         Child child = new Child(this.generator);
+        this.fileExtension = fileExtension;
         int sum = 0;
         while(sum < value.length) {
             int lengthToEncrypt = (int) (Math.random() * partLength);
@@ -206,12 +207,58 @@ public class Parent implements Serializable {
         }
     }
 
-    public String decrypt() throws InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {
+    /*public String decrypt() throws InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {
         StringBuilder sb = new StringBuilder();
         for(Child child : children) {
             sb.append(child.decrypt());
         }
         return sb.toString();
+    }*/
+
+    /**
+     * Used for maps
+     */
+    public void decryptAndWriteToFile(String fileName) throws FileNotFoundException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
+        this.decryptAndWriteToFile(fileName, ".map");
+    }
+    //TODO auslagern
+    public void decryptAndWriteToFile(String fileName, String fileExtension) throws FileNotFoundException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+        byte[] decryptedContent = this.decrypt();
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(String.format("%s.%s", fileName, fileExtension));
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(decryptedContent);
+            objectOutputStream.close();
+            fileOutputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //TODO auslagern, paramete rmuss mitgegeben werden
+    public byte[] decrypt() throws InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {
+        List<Byte> bytes = new ArrayList<Byte>();
+        for(Child child: children) {
+            Parent.addAllFromArrayToList(bytes, child.decrypt());
+        }
+        byte[] retVal = new byte[bytes.size()];
+        return listToArr(bytes);
+    }
+
+    //TODO auslagern
+    private static void addAllFromArrayToList(List<Byte> list, byte[] arr) {
+        for(byte val: arr) {
+            list.add(val);
+        }
+    }
+    //TODO auslagern
+    private static byte[] listToArr(List<Byte> list) {
+        byte[] retArr = new byte[list.size()];
+        for(int i = 0; i < retArr.length; i++) {
+            retArr[i] = list.get(i);
+        }
+        return retArr;
     }
 }
 
@@ -224,3 +271,5 @@ public class Parent implements Serializable {
  *
  * Let FileHandler handle all
  */
+
+//TODO entweder es laufen auch Strings in byte Arrays oder es werden nur byte Arrays gehandelt

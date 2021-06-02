@@ -36,7 +36,7 @@ public class Child implements Serializable {
         this.encryptedPart = CryptoUtil.encrypt(toEnCrypt, keyPair.getPublic());
     }
 
-    public String decrypt() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
+    public byte[] decrypt() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
         return CryptoUtil.decrypt(this.encryptedPart, this.keyPair.getPrivate());
     }
 

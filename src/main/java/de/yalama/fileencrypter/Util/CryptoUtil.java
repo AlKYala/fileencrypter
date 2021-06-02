@@ -23,9 +23,14 @@ public class CryptoUtil implements Serializable {
         return encrypter.doFinal(inputByteArray);
     }
 
-    public static String decrypt(byte[] encryptedInput, PrivateKey privateKey) throws NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeyException {
+    /*public static String decrypt(byte[] encryptedInput, PrivateKey privateKey) throws NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeyException {
         Cipher decrypter = CryptoUtil.getRSACipher(Cipher.DECRYPT_MODE, privateKey);
         return new String(decrypter.doFinal(encryptedInput), StandardCharsets.UTF_8);
+    }*/
+
+    public static byte[] decrypt(byte[] encryptedInput, PrivateKey privateKey) throws BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+        Cipher decrypter = CryptoUtil.getRSACipher(Cipher.DECRYPT_MODE, privateKey);
+        return decrypter.doFinal(encryptedInput);
     }
 
     private static Cipher getRSACipher(int mode, Key key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {

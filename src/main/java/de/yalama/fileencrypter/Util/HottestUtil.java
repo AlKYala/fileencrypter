@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 public class HottestUtil {
     //hottests
@@ -35,6 +36,6 @@ public class HottestUtil {
         testParent.extractAll("map", "parent.file");
         testParent = Parent.loadParent("parent.file");
         testParent.loadKeyMap("map.map");
-        System.out.println(testParent.decrypt());
+        System.out.println(Arrays.toString(testParent.decrypt()));
     }
 }
