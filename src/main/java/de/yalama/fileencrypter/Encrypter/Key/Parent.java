@@ -2,7 +2,7 @@ package de.yalama.fileencrypter.Encrypter.Key;
 
 import de.yalama.fileencrypter.Encrypter.Exceptions.InsecureExtractionException;
 import de.yalama.fileencrypter.Encrypter.Exceptions.KeyPairNotFoundException;
-import de.yalama.fileencrypter.Encrypter.FileHandler.FileHandler;
+//import de.yalama.fileencrypter.Encrypter.FileHandler.FileHandler;
 import de.yalama.fileencrypter.Util.FileUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +24,7 @@ public class Parent implements Serializable {
      */
     private static KeyPairGenerator generator;
     private List<Child> children;
-    private FileHandler fileHandler;
+    //private FileHandler fileHandler;
 
     public Parent() throws NoSuchAlgorithmException {
         this.children = new ArrayList<Child>();
@@ -131,7 +131,6 @@ public class Parent implements Serializable {
      * Checks if all children have no keyPair left. Important for extraction of Parent instance
      * @return false if one child with not null keyPair member exists
      */
-    //TODO set private again
     private boolean checkChildrenAllClear() {
         for(Child c : children) {
             if(c.getKeyPair() != null) {
@@ -221,4 +220,6 @@ public class Parent implements Serializable {
  * <Integer, Keypair> - the key says which child has what keypair!
  *
  * When writing to a file, first the keypair is extracted then the parent
+ *
+ * Let FileHandler handle all
  */
