@@ -1,9 +1,9 @@
 package de.yalama.fileencrypter.Encrypter.Key;
 
+import de.yalama.fileencrypter.Util.CryptoUtil;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.security.*;
 import javax.crypto.BadPaddingException;
@@ -18,20 +18,29 @@ import javax.crypto.NoSuchPaddingException;
  * Package private used
  */
 @Setter
+@Getter
 public class Child implements Serializable {
 
     private KeyPair keyPair;
     private byte[] encryptedPart;
 
-    Child(KeyPairGenerator kpGenerator) {
+    public Child(KeyPairGenerator kpGenerator) {
         this.setKeyPair(kpGenerator.generateKeyPair());
     }
 
-    void encryptAndStore(String toEncrypt) throws NoSuchAlgorithmException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException {
-        this.encryptedPart = CryptoUtil.encryptString(toEncrypt, keyPair.getPublic());
+    public void encryptAndStore(String toEncrypt) throws NoSuchAlgorithmException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException {
+        this.encryptedPart = CryptoUtil.encrypt(toEncrypt, keyPair.getPublic());
     }
 
-    String decrypt() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
+    public void encryptAndStore(byte[] toEnCrypt) throws NoSuchAlgorithmException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException {
+        this.encryptedPart = CryptoUtil.encrypt(toEnCrypt, keyPair.getPublic());
+    }
+
+    public String decrypt() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
         return CryptoUtil.decrypt(this.encryptedPart, this.keyPair.getPrivate());
+    }
+
+    void removeKeyPair() {
+        this.keyPair = null;
     }
 }
