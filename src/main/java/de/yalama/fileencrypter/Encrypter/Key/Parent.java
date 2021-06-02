@@ -25,6 +25,7 @@ public class Parent implements Serializable {
     private static KeyPairGenerator generator;
     private List<Child> children;
     //private FileHandler fileHandler;
+    private String fileExtension;
 
     public Parent() throws NoSuchAlgorithmException {
         this.children = new ArrayList<Child>();
@@ -46,16 +47,16 @@ public class Parent implements Serializable {
         }
     }
 
-    public void encryptFileAndStore(File file, double partLength) throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    public void encryptFileAndStore(File file, double partLength, String fileExtension) throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         byte[] fileAsByte = FileUtil.fileToByteArr(file);
-        this.encryptAndStoreValue(fileAsByte, partLength);
+        this.encryptAndStoreValue(fileAsByte, partLength, fileExtension);
     }
 
-    public void encryptFileAndStore(File file) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
-        this.encryptFileAndStore(file, 5000d);
+    public void encryptFileAndStore(File file, String fileExtension) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
+        this.encryptFileAndStore(file, 5000d, fileExtension);
     }
 
-    public void encryptAndStoreValue(byte[] value, double partLength) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException {
+    public void encryptAndStoreValue(byte[] value, double partLength, String fileExtension) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException {
         Child child = new Child(this.generator);
         int sum = 0;
         while(sum < value.length) {
@@ -70,8 +71,8 @@ public class Parent implements Serializable {
         }
     }
 
-    public void encryptAndStoreValue(byte[] value) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
-        this.encryptAndStoreValue(value, 5000d);
+    public void encryptAndStoreValue(byte[] value, String fileExtension) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
+        this.encryptAndStoreValue(value, 5000d, fileExtension);
     }
 
     public void encryptAndStoreValue(String value, double partLength) throws NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, InvalidKeyException, IllegalBlockSizeException {
