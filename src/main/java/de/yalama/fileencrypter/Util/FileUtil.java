@@ -2,6 +2,7 @@ package de.yalama.fileencrypter.Util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Base64;
 
 public class FileUtil {
 
@@ -18,4 +19,8 @@ public class FileUtil {
         return fileInBytes;
     }
 
+    public static String fileToBase64String(File file) {
+        byte[] fileInByteArr = FileUtil.fileToByteArr(file);
+        return Base64.getEncoder().encodeToString(fileInByteArr);
+    }
 }

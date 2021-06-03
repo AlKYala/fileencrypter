@@ -8,6 +8,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
@@ -37,5 +38,18 @@ public class HottestUtil {
         testParent = Parent.loadParent("parent.file");
         testParent.loadKeyMap("map.map");
         System.out.println(Arrays.toString(testParent.decrypt()));
+    }
+
+    public static void loadFromFileEncryptDecryptWriteBackToFile(String fileName, String extension) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException, FileNotFoundException {
+        File file = new File(fileName);
+        System.out.println(file.length());
+        Parent testParent = new Parent();
+        testParent.encryptAndStoreValue(FileUtil.fileToByteArr(file), 244, extension);
+        testParent.decryptAndWriteToFile("decrypted", extension);
+    }
+
+    public static void loadFileAndEncryptToBase64(String fileName) {
+        File file = new File(fileName);
+        System.out.println(FileUtil.fileToBase64String(file));
     }
 }

@@ -23,6 +23,7 @@ public class Child implements Serializable {
 
     private KeyPair keyPair;
     private byte[] encryptedPart;
+    private String encryptedPartBase64;
 
     public Child(KeyPairGenerator kpGenerator) {
         this.setKeyPair(kpGenerator.generateKeyPair());

@@ -64,7 +64,6 @@ public class Parent implements Serializable {
             int lengthToEncrypt = (int) (Math.random() * partLength);
             lengthToEncrypt = (sum + lengthToEncrypt > value.length) ? value.length - (sum) : lengthToEncrypt;
             byte[] partToEncrypt = Arrays.copyOfRange(value, sum, sum+lengthToEncrypt);
-
             child.encryptAndStore(partToEncrypt);
             this.children.add(child);
             child = new Child(this.generator);
@@ -73,7 +72,7 @@ public class Parent implements Serializable {
     }
 
     public void encryptAndStoreValue(byte[] value, String fileExtension) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
-        this.encryptAndStoreValue(value, 5000d, fileExtension);
+        this.encryptAndStoreValue(value, 50000d, fileExtension);
     }
 
     public void encryptAndStoreValue(String value, double partLength) throws NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, InvalidKeyException, IllegalBlockSizeException {
@@ -221,7 +220,7 @@ public class Parent implements Serializable {
     public void decryptAndWriteToFile(String fileName) throws FileNotFoundException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
         this.decryptAndWriteToFile(fileName, ".map");
     }
-    //TODO auslagern
+    //TODO auslagern, testen
     public void decryptAndWriteToFile(String fileName, String fileExtension) throws FileNotFoundException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         byte[] decryptedContent = this.decrypt();
         FileOutputStream fileOutputStream = null;

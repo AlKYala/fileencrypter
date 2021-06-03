@@ -19,9 +19,11 @@ public class FileencrypterApplication {
 
     //just testing here
     public static void main(String[] args) throws NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, KeyPairNotFoundException, IOException, InsecureExtractionException, ClassNotFoundException {
-        SpringApplication.run(FileencrypterApplication.class, args);
+        /*SpringApplication.run(FileencrypterApplication.class, args);
         HottestUtil.testSimpleEncryptDecrypt();
         HottestUtil.storeAndLoadAndStoreParentToo();
+        HottestUtil.loadFromFileEncryptDecryptWriteBackToFile("bild.png", "png");*/
+        HottestUtil.loadFileAndEncryptToBase64("bild.png");
         System.exit(0);
     }
 }
