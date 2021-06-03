@@ -23,7 +23,8 @@ public class FileencrypterApplication {
         HottestUtil.testSimpleEncryptDecrypt();
         HottestUtil.storeAndLoadAndStoreParentToo();
         HottestUtil.loadFromFileEncryptDecryptWriteBackToFile("bild.png", "png");*/
-        HottestUtil.loadFileAndEncryptToBase64("bild.png");
+        //HottestUtil.loadFileAndEncryptToBase64("Speicher.mp4");
+        HottestUtil.readFileAndWriteBase64("Speicher.mp4", "output.txt");
         System.exit(0);
     }
 }

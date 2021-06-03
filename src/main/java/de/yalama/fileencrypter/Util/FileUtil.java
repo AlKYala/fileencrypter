@@ -1,7 +1,6 @@
 package de.yalama.fileencrypter.Util;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.*;
 import java.util.Base64;
 
 public class FileUtil {

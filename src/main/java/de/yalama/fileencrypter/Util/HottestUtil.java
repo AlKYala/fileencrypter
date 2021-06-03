@@ -7,9 +7,7 @@ import de.yalama.fileencrypter.Encrypter.Key.Parent;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -51,5 +49,23 @@ public class HottestUtil {
     public static void loadFileAndEncryptToBase64(String fileName) {
         File file = new File(fileName);
         System.out.println(FileUtil.fileToBase64String(file));
+    }
+
+    //only for testing purposes
+    public static void writeStringToFile(String str, String fileNameWithExtension) throws IOException {
+        FileWriter fileWriter = new FileWriter(fileNameWithExtension);
+        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+        try {
+            bufferedWriter.write(str);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        bufferedWriter.close();
+        fileWriter.close();
+    }
+
+    public static void readFileAndWriteBase64(String inputFileNameWithExtension, String outputFileNameWithExtension) throws IOException {
+        File file = new File(inputFileNameWithExtension);
+        HottestUtil.writeStringToFile(FileUtil.fileToBase64String(file), outputFileNameWithExtension);
     }
 }
