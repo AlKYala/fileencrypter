@@ -87,6 +87,7 @@ public class Parent implements Serializable {
             this.children.add(child);
             child = new Child(this.generator);
             sum += howMuchOfTheValueIsEncrypted;
+            System.out.println(sum);
         }
     }
 
@@ -206,21 +207,22 @@ public class Parent implements Serializable {
         }
     }
 
-    /*public String decrypt() throws InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {
+    public String decrypt() throws InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {
         StringBuilder sb = new StringBuilder();
         for(Child child : children) {
-            sb.append(child.decrypt());
+            sb.append(new String(child.decrypt()));
         }
         return sb.toString();
-    }*/
+    }
 
     /**
      * Used for maps
      */
     public void decryptAndWriteToFile(String fileName) throws FileNotFoundException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
-        this.decryptAndWriteToFile(fileName, ".map");
+        //TODO this.decryptAndWriteToFile(fileName, ".map");
     }
-    //TODO auslagern, testen
+
+    /* Deprecated because of base64 instead of byte[] is used
     public void decryptAndWriteToFile(String fileName, String fileExtension) throws FileNotFoundException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         byte[] decryptedContent = this.decrypt();
         FileOutputStream fileOutputStream = null;
@@ -235,7 +237,7 @@ public class Parent implements Serializable {
         }
     }
 
-    //TODO auslagern, paramete rmuss mitgegeben werden
+
     public byte[] decrypt() throws InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {
         List<Byte> bytes = new ArrayList<Byte>();
         for(Child child: children) {
@@ -258,7 +260,7 @@ public class Parent implements Serializable {
             retArr[i] = list.get(i);
         }
         return retArr;
-    }
+    }*/
 }
 
 /**
