@@ -25,16 +25,15 @@ public class Parent implements Serializable {
      * The generator can be singleton because we dont need n instances of KeyPairGenerator - only one per runtime
      * KeyPairGenerator is not serializable so this is a good strategy that saves some memory
      */
-    private static KeyPairGenerator generator;
+    //private static KeyPairGenerator generator;
     private List<Child> children;
     //private FileHandler fileHandler;
     private String fileExtension;
 
     public Parent() throws NoSuchAlgorithmException {
         this.children = new ArrayList<Child>();
-        this.initKeyPairGenerator();
+        //this.initKeyPairGenerator();
     }
-
 
     public static Parent loadParent(String parentPath) throws IOException, ClassNotFoundException {
         File parentFile = new File(parentPath);
@@ -43,12 +42,12 @@ public class Parent implements Serializable {
         return (Parent) objectInputStream.readObject();
     }
 
-    private void initKeyPairGenerator() throws NoSuchAlgorithmException {
+    /*private void initKeyPairGenerator() throws NoSuchAlgorithmException {
         if(Parent.generator == null) {
             generator = KeyPairGenerator.getInstance("RSA");
             generator.initialize(2048);
         }
-    }
+    }*/
 
     /*public void encryptFileAndStore(File file, double partLength, String fileExtension) throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         byte[] fileAsByte = FileUtil.fileToByteArr(file);
@@ -79,7 +78,7 @@ public class Parent implements Serializable {
     }*/
 
     public void encryptAndStoreValue(String value, double partLength) throws NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, InvalidKeyException, IllegalBlockSizeException, InvalidKeySpecException, InvalidAlgorithmParameterException {
-        Child child = new Child(this.generator);
+        Child child = new Child();
         int sum = 0;
         while(sum < value.length()) {
             int howMuchOfTheValueIsEncrypted = (int) (Math.random() * partLength);
@@ -88,7 +87,7 @@ public class Parent implements Serializable {
             String subStringToEncrypt = value.substring(sum, sum+howMuchOfTheValueIsEncrypted);
             child.encryptAndStore(subStringToEncrypt);
             this.children.add(child);
-            child = new Child(this.generator);
+            child = new Child();
             sum += howMuchOfTheValueIsEncrypted;
             System.out.println(sum);
         }
@@ -138,7 +137,7 @@ public class Parent implements Serializable {
      */
     private boolean checkChildrenAllClear() {
         for(Child c : children) {
-            if(c.getKeyPair() != null) {
+            if(c.getKey() != null) {
                 return false;
             }
         }
@@ -150,20 +149,20 @@ public class Parent implements Serializable {
      * @return a Map<Integer, KeyMap> objected implemented in HashMap, see description.
      * @throws KeyPairNotFoundException thrown when a child object with no keyPair is found - which only happens if a child object keyMap is cleared
      */
-    private Map<Integer, KeyPair> getKeyPairOfChildren() throws KeyPairNotFoundException {
-        Map<Integer, KeyPair> keyPairMap = new HashMap<Integer, KeyPair>();
+    private Map<Integer, KeyObject> getKeyPairOfChildren() throws KeyPairNotFoundException {
+        Map<Integer, KeyObject> keyPairMap = new HashMap<Integer, KeyObject>();
         for(int i = 0; i < children.size(); i++) {
-            if(children.get(i).getKeyPair() == null) {
+            if(children.get(i).getKey() == null) {
                 throw new KeyPairNotFoundException("Keypair of child not found - probably deleted already");
             }
-            keyPairMap.put(i, children.get(i).getKeyPair());
+            keyPairMap.put(i, children.get(i).getKey());
         }
         return keyPairMap;
     }
 
     private void clearKeyPairsOfChildren() {
         for(Child c: children) {
-            c.removeKeyPair();
+            c.clearKeyObject();
         }
     }
 
@@ -175,7 +174,7 @@ public class Parent implements Serializable {
      */
     private void extractKeyMap(String fileName) throws IOException, KeyPairNotFoundException {
         FileOutputStream fileOutputStream = null;
-        Map<Integer, KeyPair> childrenKeyPair = this.getKeyPairOfChildren();
+        Map<Integer, KeyObject> childrenKeyPair = this.getKeyPairOfChildren();
         try {
             fileOutputStream = new FileOutputStream(String.format("%s.map", fileName));
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
@@ -199,14 +198,14 @@ public class Parent implements Serializable {
     private void loadKeyMapData(File keyMapFile) throws IOException, ClassNotFoundException {
         FileInputStream fileInputStream = new FileInputStream(keyMapFile);
         ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-        Map<Integer, KeyPair> keyPairMap = (Map<Integer, KeyPair>) objectInputStream.readObject();
+        Map<Integer, KeyObject> keyPairMap = (Map<Integer, KeyObject>) objectInputStream.readObject();
         //TODO check if this actually works
         this.feedValuesToChildren(keyPairMap);
     }
 
-    private void feedValuesToChildren(Map<Integer, KeyPair> map) {
+    private void feedValuesToChildren(Map<Integer, KeyObject> map) {
         for(Integer index : map.keySet()) {
-            this.children.get(index).setKeyPair(map.get(index));
+            this.children.get(index).setKey(map.get(index));
         }
     }
 

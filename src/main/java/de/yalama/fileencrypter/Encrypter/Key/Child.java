@@ -26,25 +26,24 @@ import javax.crypto.spec.PBEKeySpec;
 @Getter
 public class Child implements Serializable {
 
-    private KeyPair keyPair;
     private String encryptedPart;
     //TODO encrypt these two
-    private IvParameterSpec spec;
-    private SecretKey key;
+    private KeyObject key;
 
-    public Child(KeyPairGenerator kpGenerator) {
-        this.setKeyPair(kpGenerator.generateKeyPair());
+    public Child() {
+        this.key = new KeyObject();
     }
 
     private String generateRandomSalt(String toEncrypt) {
         return String.format("%dAMOGUS%d%d%s", this.hashCode(), "random".hashCode(),
-                this.hashCode() + keyPair.hashCode(), toEncrypt);
+                this.hashCode() + this.key.hashCode(), toEncrypt);
     }
 
     public void encryptAndStore(String toEncrypt) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException {
-        this.spec = CryptoUtil.generateInitializationVector();
-        this.key = CryptoUtil.generateKey(toEncrypt, this.generateRandomSalt(toEncrypt));
-
+        IvParameterSpec spec = CryptoUtil.generateInitializationVector();
+        SecretKey sKey = CryptoUtil.generateKey(toEncrypt, this.generateRandomSalt(toEncrypt));
+        this.key.setIvParameterSpec(spec);
+        this.key.setSecretKey(sKey);
         this.encryptContent(toEncrypt, "AES/CBC/PKCS5Padding");
         //TODO store key
     }
@@ -52,7 +51,7 @@ public class Child implements Serializable {
     private void encryptContent(String toEncrypt, String algorithm) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
 
         Cipher cipher = Cipher.getInstance(algorithm);
-        cipher.init(Cipher.ENCRYPT_MODE, this.key, this.spec);
+        cipher.init(Cipher.ENCRYPT_MODE, this.key.getSecretKey(), this.key.getIvParameterSpec());
         this.encryptedPart = Base64.getEncoder().encodeToString(cipher.doFinal(toEncrypt.getBytes()));
         //debug
         System.out.printf("%s\n%s\n%s", toEncrypt, encryptedPart, this.decrypt());
@@ -62,43 +61,22 @@ public class Child implements Serializable {
         return (int) Math.random() * length;
     }
 
-    /* Deprecated
-
-    private SecretKey generateKey(String toEncrypt) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512");
-        PBEKeySpec pbeSpec = new PBEKeySpec(toEncrypt.toCharArray(), this.generateRandomSalt().getBytes(),
-                this.getRandomNumberOfIterations(), 512);
-        return keyFactory.generateSecret(pbeSpec);
-    }*/
-
     private void encryptKeyAndStore(SecretKey key) {
         
     }
 
+    public void clearKeyObject() {
+        this.key = null;
+    }
+
     /**
-     * TODO: Encrypt key, decrypt key, decrypt content
+     * TODO: Auslagern iv und spec in eine eigene datei
      */
 
     public String decrypt() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
         //TODO
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-        cipher.init(Cipher.DECRYPT_MODE, this.key, this.spec);
+        cipher.init(Cipher.DECRYPT_MODE, this.key.getSecretKey(), this.key.getIvParameterSpec());
         return new String(cipher.doFinal(Base64.getDecoder().decode(this.encryptedPart)));
     }
-
-    void removeKeyPair() {
-        this.keyPair = null;
-    }
-
-    /* DEPRECATED
-
-    public void encryptAndStore(String toEncrypt) throws NoSuchAlgorithmException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException {
-        this.encryptedPart = CryptoUtil.encrypt(toEncrypt, keyPair.getPublic());
-    }
-
-    public void encryptAndStore(byte[] toEnCrypt) throws NoSuchAlgorithmException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException {
-        this.encryptedPart = CryptoUtil.encrypt(toEnCrypt, keyPair.getPublic());
-    }
-
-*/
 }
