@@ -3,6 +3,7 @@ package de.yalama.fileencrypter.Encrypter.Key;
 import de.yalama.fileencrypter.Encrypter.Exceptions.InsecureExtractionException;
 import de.yalama.fileencrypter.Encrypter.Exceptions.KeyPairNotFoundException;
 //import de.yalama.fileencrypter.Encrypter.FileHandler.FileHandler;
+import de.yalama.fileencrypter.Util.CryptoUtil;
 import de.yalama.fileencrypter.Util.FileUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,8 +11,10 @@ import lombok.Setter;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 import java.io.*;
 import java.security.*;
+import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 
 @Getter
@@ -47,16 +50,16 @@ public class Parent implements Serializable {
         }
     }
 
-    public void encryptFileAndStore(File file, double partLength, String fileExtension) throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+    /*public void encryptFileAndStore(File file, double partLength, String fileExtension) throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         byte[] fileAsByte = FileUtil.fileToByteArr(file);
         this.encryptAndStoreValue(fileAsByte, partLength, fileExtension);
-    }
+    }*/
 
-    public void encryptFileAndStore(File file, String fileExtension) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
+    /*public void encryptFileAndStore(File file, String fileExtension) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
         this.encryptFileAndStore(file, 5000d, fileExtension);
-    }
+    }*/
 
-    public void encryptAndStoreValue(byte[] value, double partLength, String fileExtension) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException {
+    /*public void encryptAndStoreValue(byte[] value, double partLength, String fileExtension) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException {
         Child child = new Child(this.generator);
         this.fileExtension = fileExtension;
         int sum = 0;
@@ -73,9 +76,9 @@ public class Parent implements Serializable {
 
     public void encryptAndStoreValue(byte[] value, String fileExtension) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
         this.encryptAndStoreValue(value, 50000d, fileExtension);
-    }
+    }*/
 
-    public void encryptAndStoreValue(String value, double partLength) throws NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, InvalidKeyException, IllegalBlockSizeException {
+    public void encryptAndStoreValue(String value, double partLength) throws NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, InvalidKeyException, IllegalBlockSizeException, InvalidKeySpecException, InvalidAlgorithmParameterException {
         Child child = new Child(this.generator);
         int sum = 0;
         while(sum < value.length()) {
@@ -91,7 +94,7 @@ public class Parent implements Serializable {
         }
     }
 
-    public void encryptAndStoreValue(String value) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException {
+    public void encryptAndStoreValue(String value) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException, InvalidAlgorithmParameterException {
         this.encryptAndStoreValue(value, 5000d);
     }
 
@@ -207,13 +210,13 @@ public class Parent implements Serializable {
         }
     }
 
-    public String decrypt() throws InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {
+    /*public String decrypt() throws InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {
         StringBuilder sb = new StringBuilder();
         for(Child child : children) {
             sb.append(new String(child.decrypt()));
         }
         return sb.toString();
-    }
+    }*/
 
     /**
      * Used for maps

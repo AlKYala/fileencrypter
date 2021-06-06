@@ -15,7 +15,7 @@ import java.util.Arrays;
 
 public class HottestUtil {
     //hottests
-    public static void testSimpleEncryptDecrypt() throws NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, InvalidKeyException {
+    /*public static void testSimpleEncryptDecrypt() throws NoSuchAlgorithmException, IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException, InvalidKeyException {
         Parent testParent = new Parent();
         testParent.encryptAndStoreValue("AMOGAS");
         System.out.println(testParent.decrypt());
@@ -44,7 +44,7 @@ public class HottestUtil {
         Parent testParent = new Parent();
         testParent.encryptAndStoreValue(FileUtil.fileToByteArr(file), 244, extension);
         //TODO testParent.decryptAndWriteToFile("decrypted", extension);
-    }
+    }*/
 
     public static void loadFileAndEncryptToBase64(String fileName) {
         File file = new File(fileName);
@@ -69,11 +69,11 @@ public class HottestUtil {
         HottestUtil.writeStringToFile(FileUtil.fileToBase64String(file), outputFileNameWithExtension);
     }
 
-    public static void fileToBase64EncryptDecrypt(String inputFileNameWithExtension, String outputFileNameWithExtension) throws NoSuchAlgorithmException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, FileNotFoundException {
+    /*public static void fileToBase64EncryptDecrypt(String inputFileNameWithExtension, String outputFileNameWithExtension) throws NoSuchAlgorithmException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, FileNotFoundException {
         File file = new File(inputFileNameWithExtension);
         String data = FileUtil.fileToBase64String(file);
         Parent testParent = new Parent();
         testParent.encryptAndStoreValue(data, 245);
         testParent.decryptAndWriteToFile(outputFileNameWithExtension);
-    }
+    }*/
 }

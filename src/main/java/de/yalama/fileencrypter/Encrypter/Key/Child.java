@@ -34,19 +34,25 @@ public class Child implements Serializable {
     }
 
     private String generateRandomSalt(String toEncrypt) {
-        return String.format("%dAMOGUS%d%d%s", this.hashCode(), encryptedPart.hashCode(),
+        return String.format("%dAMOGUS%d%d%s", this.hashCode(), "random".hashCode(),
                 this.hashCode() + keyPair.hashCode(), toEncrypt);
     }
 
-    public void encryptAndStore(String toEncrypt, SecretKey key, IvParameterSpec spec, String algorithm) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException {
-        this.encryptContent(toEncrypt, key, spec, algorithm);
+    public void encryptAndStore(String toEncrypt) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException {
+        IvParameterSpec spec = CryptoUtil.generateInitializationVector();
+        SecretKey key = CryptoUtil.generateKey(toEncrypt, this.generateRandomSalt(toEncrypt));
+
+        this.encryptContent(toEncrypt, key, spec, "AES/CBC/PKCS5Padding");
         //TODO store key
     }
 
-    private void encryptContent(String toEncrypt, SecretKey key, IvParameterSpec spec, String algorithm) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException {
+    private void encryptContent(String toEncrypt, SecretKey key, IvParameterSpec spec, String algorithm) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+
         Cipher cipher = Cipher.getInstance(algorithm);
         cipher.init(Cipher.ENCRYPT_MODE, key, spec);
         this.encryptedPart = Base64.getEncoder().encodeToString(cipher.doFinal(toEncrypt.getBytes()));
+        //debug
+        System.out.printf("%s\n%s", toEncrypt, encryptedPart);
     }
 
     private int getRandomLengthForKey(int length) {
