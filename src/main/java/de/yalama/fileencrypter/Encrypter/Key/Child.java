@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.parameters.P;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -27,7 +28,6 @@ import javax.crypto.spec.PBEKeySpec;
 public class Child implements Serializable {
 
     private String encryptedPart;
-    //TODO encrypt these two
     private KeyObject key;
 
     public Child() {
@@ -39,42 +39,29 @@ public class Child implements Serializable {
                 this.hashCode() + this.key.hashCode(), toEncrypt);
     }
 
-    public void encryptAndStore(String toEncrypt) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException {
+    public void encryptAndStore(String toEncrypt) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException, IOException, ClassNotFoundException {
         IvParameterSpec spec = CryptoUtil.generateInitializationVector();
         SecretKey sKey = CryptoUtil.generateKey(toEncrypt, this.generateRandomSalt(toEncrypt));
         this.key.setIvParameterSpec(spec);
         this.key.setSecretKey(sKey);
         this.encryptContent(toEncrypt, "AES/CBC/PKCS5Padding");
-        //TODO store key
     }
 
-    private void encryptContent(String toEncrypt, String algorithm) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-
+    private void encryptContent(String toEncrypt, String algorithm) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, IOException, ClassNotFoundException {
         Cipher cipher = Cipher.getInstance(algorithm);
         cipher.init(Cipher.ENCRYPT_MODE, this.key.getSecretKey(), this.key.getIvParameterSpec());
         this.encryptedPart = Base64.getEncoder().encodeToString(cipher.doFinal(toEncrypt.getBytes()));
-        //debug
-        System.out.printf("%s\n%s\n%s", toEncrypt, encryptedPart, this.decrypt());
     }
 
     private int getRandomLengthForKey(int length) {
         return (int) Math.random() * length;
     }
 
-    private void encryptKeyAndStore(SecretKey key) {
-        
-    }
-
     public void clearKeyObject() {
         this.key = null;
     }
 
-    /**
-     * TODO: Auslagern iv und spec in eine eigene datei
-     */
-
-    public String decrypt() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
-        //TODO
+    public String decrypt() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IOException, ClassNotFoundException {
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, this.key.getSecretKey(), this.key.getIvParameterSpec());
         return new String(cipher.doFinal(Base64.getDecoder().decode(this.encryptedPart)));

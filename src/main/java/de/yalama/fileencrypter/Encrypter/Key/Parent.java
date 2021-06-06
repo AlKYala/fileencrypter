@@ -77,7 +77,7 @@ public class Parent implements Serializable {
         this.encryptAndStoreValue(value, 50000d, fileExtension);
     }*/
 
-    public void encryptAndStoreValue(String value, double partLength) throws NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, InvalidKeyException, IllegalBlockSizeException, InvalidKeySpecException, InvalidAlgorithmParameterException {
+    public void encryptAndStoreValue(String value, double partLength) throws NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, InvalidKeyException, IllegalBlockSizeException, InvalidKeySpecException, InvalidAlgorithmParameterException, IOException, ClassNotFoundException {
         Child child = new Child();
         int sum = 0;
         while(sum < value.length()) {
@@ -93,7 +93,7 @@ public class Parent implements Serializable {
         }
     }
 
-    public void encryptAndStoreValue(String value) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException, InvalidAlgorithmParameterException {
+    public void encryptAndStoreValue(String value) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException, InvalidAlgorithmParameterException, IOException, ClassNotFoundException {
         this.encryptAndStoreValue(value, 5000d);
     }
 
@@ -221,7 +221,7 @@ public class Parent implements Serializable {
      * Used for maps
      */
     public void decryptAndWriteToFile(String fileName) throws FileNotFoundException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
-        //TODO this.decryptAndWriteToFile(fileName, ".map");
+
     }
 
     /* Deprecated because of base64 instead of byte[] is used
