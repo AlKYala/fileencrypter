@@ -28,6 +28,9 @@ public class Child implements Serializable {
 
     private KeyPair keyPair;
     private String encryptedPart;
+    //TODO encrypt these two
+    private IvParameterSpec spec;
+    private SecretKey key;
 
     public Child(KeyPairGenerator kpGenerator) {
         this.setKeyPair(kpGenerator.generateKeyPair());
@@ -39,20 +42,20 @@ public class Child implements Serializable {
     }
 
     public void encryptAndStore(String toEncrypt) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException {
-        IvParameterSpec spec = CryptoUtil.generateInitializationVector();
-        SecretKey key = CryptoUtil.generateKey(toEncrypt, this.generateRandomSalt(toEncrypt));
+        this.spec = CryptoUtil.generateInitializationVector();
+        this.key = CryptoUtil.generateKey(toEncrypt, this.generateRandomSalt(toEncrypt));
 
-        this.encryptContent(toEncrypt, key, spec, "AES/CBC/PKCS5Padding");
+        this.encryptContent(toEncrypt, "AES/CBC/PKCS5Padding");
         //TODO store key
     }
 
-    private void encryptContent(String toEncrypt, SecretKey key, IvParameterSpec spec, String algorithm) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
+    private void encryptContent(String toEncrypt, String algorithm) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
 
         Cipher cipher = Cipher.getInstance(algorithm);
-        cipher.init(Cipher.ENCRYPT_MODE, key, spec);
+        cipher.init(Cipher.ENCRYPT_MODE, this.key, this.spec);
         this.encryptedPart = Base64.getEncoder().encodeToString(cipher.doFinal(toEncrypt.getBytes()));
         //debug
-        System.out.printf("%s\n%s", toEncrypt, encryptedPart);
+        System.out.printf("%s\n%s\n%s", toEncrypt, encryptedPart, this.decrypt());
     }
 
     private int getRandomLengthForKey(int length) {
@@ -76,9 +79,11 @@ public class Child implements Serializable {
      * TODO: Encrypt key, decrypt key, decrypt content
      */
 
-    public String decrypt(SecretKey key) throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
+    public String decrypt() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
         //TODO
-        return "";
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.DECRYPT_MODE, this.key, this.spec);
+        return new String(cipher.doFinal(Base64.getDecoder().decode(this.encryptedPart)));
     }
 
     void removeKeyPair() {

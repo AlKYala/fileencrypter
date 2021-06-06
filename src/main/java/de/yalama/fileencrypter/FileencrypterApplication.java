@@ -30,6 +30,6 @@ public class FileencrypterApplication {
         //HottestUtil.fileToBase64EncryptDecrypt("bild.png", "ausgabe.txt");
         //System.exit(0);
         Parent p = new Parent();
-        p.encryptAndStoreValue("Text", 50);
+        p.encryptAndStoreValue("Textt", 50);
     }
 }
