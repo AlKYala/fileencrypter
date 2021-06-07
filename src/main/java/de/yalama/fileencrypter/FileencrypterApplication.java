@@ -39,6 +39,9 @@ public class FileencrypterApplication {
                 "Sed nec urna molestie, cursus eros ac, mattis libero. Sed convallis eros lacus, non laoreet nibh fringilla ut. Donec ac risus vitae lectus porta rhoncus sed sit amet turpis. Aliquam nec nunc est. Proin rutrum velit nec sagittis congue. Mauris bibendum diam suscipit, faucibus erat hendrerit, dapibus neque. Nulla venenatis pretium euismod. Pellentesque eget volutpat lacus. Praesent sed risus vel nisl scelerisque venenatis. Ut posuere at felis nec sagittis. Curabitur porta lobortis metus at imperdiet. Maecenas lacus lacus, eleifend ut tempor et, dignissim ac justo. Vivamus ac felis sit amet neque faucibus egestas. Quisque feugiat arcu sit amet ultrices sodales. Sed ut varius sapien, quis consectetur diam. Phasellus pretium ante nunc, ut bibendum magna dignissim pretium.\n" +
                 "\n" +
                 "Pellentesque malesuada lobortis lectus, at finibus massa varius sed. Vivamus augue lorem, luctus vel rutrum vel, sagittis mattis massa. Suspendisse ac massa quis augue dignissim dictum id eu neque. Duis ante diam, congue eu egestas nec, maximus at mauris. Vestibulum eleifend tortor auctor metus tristique, a venenatis velit ornare. Quisque feugiat quis nisi ac consectetur. Morbi tincidunt libero augue, vitae ultrices nibh maximus nec.", 2000);
-        p.extractAll("keyobject.map", "parent.file");
+        p.extractAll("keyobject", "parent.file");
+        Parent.loadParent("parent.file");
+        p.loadKeyMap("keyobject.map");
+        System.out.println(p.decrypt());
     }
 }

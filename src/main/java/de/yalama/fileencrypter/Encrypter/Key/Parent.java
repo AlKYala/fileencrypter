@@ -42,40 +42,6 @@ public class Parent implements Serializable {
         return (Parent) objectInputStream.readObject();
     }
 
-    /*private void initKeyPairGenerator() throws NoSuchAlgorithmException {
-        if(Parent.generator == null) {
-            generator = KeyPairGenerator.getInstance("RSA");
-            generator.initialize(2048);
-        }
-    }*/
-
-    /*public void encryptFileAndStore(File file, double partLength, String fileExtension) throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
-        byte[] fileAsByte = FileUtil.fileToByteArr(file);
-        this.encryptAndStoreValue(fileAsByte, partLength, fileExtension);
-    }*/
-
-    /*public void encryptFileAndStore(File file, String fileExtension) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
-        this.encryptFileAndStore(file, 5000d, fileExtension);
-    }*/
-
-    /*public void encryptAndStoreValue(byte[] value, double partLength, String fileExtension) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException {
-        Child child = new Child(this.generator);
-        this.fileExtension = fileExtension;
-        int sum = 0;
-        while(sum < value.length) {
-            int lengthToEncrypt = (int) (Math.random() * partLength);
-            lengthToEncrypt = (sum + lengthToEncrypt > value.length) ? value.length - (sum) : lengthToEncrypt;
-            byte[] partToEncrypt = Arrays.copyOfRange(value, sum, sum+lengthToEncrypt);
-            child.encryptAndStore(partToEncrypt);
-            this.children.add(child);
-            child = new Child(this.generator);
-            sum += lengthToEncrypt;
-        }
-    }
-
-    public void encryptAndStoreValue(byte[] value, String fileExtension) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
-        this.encryptAndStoreValue(value, 50000d, fileExtension);
-    }*/
 
     public void encryptAndStoreValue(String value, double partLength) throws NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, InvalidKeyException, IllegalBlockSizeException, InvalidKeySpecException, InvalidAlgorithmParameterException, IOException, ClassNotFoundException {
         Child child = new Child();
@@ -209,6 +175,14 @@ public class Parent implements Serializable {
         }
     }
 
+    public String decrypt() throws BadPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, IllegalBlockSizeException, ClassNotFoundException, NoSuchPaddingException, InvalidKeyException, IOException {
+        StringBuilder sb = new StringBuilder();
+        for(Child c : this.children) {
+            sb.append(c.decrypt());
+        }
+        return sb.toString();
+    }
+
     /*public String decrypt() throws InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {
         StringBuilder sb = new StringBuilder();
         for(Child child : children) {
@@ -216,13 +190,6 @@ public class Parent implements Serializable {
         }
         return sb.toString();
     }*/
-
-    /**
-     * Used for maps
-     */
-    public void decryptAndWriteToFile(String fileName) throws FileNotFoundException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
-
-    }
 
     /* Deprecated because of base64 instead of byte[] is used
     public void decryptAndWriteToFile(String fileName, String fileExtension) throws FileNotFoundException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
@@ -262,6 +229,41 @@ public class Parent implements Serializable {
             retArr[i] = list.get(i);
         }
         return retArr;
+    }*/
+
+    /*private void initKeyPairGenerator() throws NoSuchAlgorithmException {
+        if(Parent.generator == null) {
+            generator = KeyPairGenerator.getInstance("RSA");
+            generator.initialize(2048);
+        }
+    }*/
+
+    /*public void encryptFileAndStore(File file, double partLength, String fileExtension) throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+        byte[] fileAsByte = FileUtil.fileToByteArr(file);
+        this.encryptAndStoreValue(fileAsByte, partLength, fileExtension);
+    }*/
+
+    /*public void encryptFileAndStore(File file, String fileExtension) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
+        this.encryptFileAndStore(file, 5000d, fileExtension);
+    }*/
+
+    /*public void encryptAndStoreValue(byte[] value, double partLength, String fileExtension) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException {
+        Child child = new Child(this.generator);
+        this.fileExtension = fileExtension;
+        int sum = 0;
+        while(sum < value.length) {
+            int lengthToEncrypt = (int) (Math.random() * partLength);
+            lengthToEncrypt = (sum + lengthToEncrypt > value.length) ? value.length - (sum) : lengthToEncrypt;
+            byte[] partToEncrypt = Arrays.copyOfRange(value, sum, sum+lengthToEncrypt);
+            child.encryptAndStore(partToEncrypt);
+            this.children.add(child);
+            child = new Child(this.generator);
+            sum += lengthToEncrypt;
+        }
+    }
+
+    public void encryptAndStoreValue(byte[] value, String fileExtension) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
+        this.encryptAndStoreValue(value, 50000d, fileExtension);
     }*/
 }
 
