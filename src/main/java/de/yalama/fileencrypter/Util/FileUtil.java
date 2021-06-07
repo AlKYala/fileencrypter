@@ -1,6 +1,7 @@
 package de.yalama.fileencrypter.Util;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.Base64;
 
 public class FileUtil {
@@ -35,4 +36,19 @@ public class FileUtil {
             e.printStackTrace();
         }
     }
+
+    public static String getExtensionFromFullFileName(String fullFileName) {
+        String[] split = fullFileName.split(".");
+        //debug
+        System.out.println(Arrays.toString(split));
+        return (split.length < 2) ? ".txt" : split[split.length-1];
+    }
+
+    public static String getExtensionFromFullFileName(File file) {
+        return FileUtil.getExtensionFromFullFileName(file.getAbsolutePath());
+    }
+    //TODO
+    /*public static File getFileFromPath(String path) {
+
+    }*/
 }

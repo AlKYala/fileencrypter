@@ -63,6 +63,18 @@ public class Parent implements Serializable {
         this.encryptAndStoreValue(value, 5000d);
     }
 
+    public void encryptFileAndStore(String path, double partLength) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, ClassNotFoundException {
+        this.fileExtension = FileUtil.getExtensionFromFullFileName(path);
+
+        this.encryptFileAndStore(new File(path), partLength);
+    }
+
+    public void encryptFileAndStore(File file, double partLength) throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException, ClassNotFoundException, InvalidAlgorithmParameterException, InvalidKeySpecException, IOException {
+        String fileAsBase64 = FileUtil.fileToBase64String(file);
+        this.fileExtension = FileUtil.getExtensionFromFullFileName(file);
+        this.encryptAndStoreValue(fileAsBase64, partLength);
+    }
+
     /**
      * first extracts the keypairMap to a seperate file, then clears the keyPair from all children
      * for safety reasons then extracts the parent
@@ -132,6 +144,7 @@ public class Parent implements Serializable {
         }
     }
 
+    //TODO auslagern
     /**
      * Extracts the keyMap specified in Parent::getPairOfChildren to a File
      * @param fileName The filename
@@ -151,7 +164,7 @@ public class Parent implements Serializable {
             e.printStackTrace();
         }
     }
-
+    //TODO auslagern
     public void loadKeyMap(String filenameWithExtension) throws IOException, ClassNotFoundException {
         File keyMapFile = new File(filenameWithExtension);
         this.loadKeyMapData(keyMapFile);
@@ -165,7 +178,6 @@ public class Parent implements Serializable {
         FileInputStream fileInputStream = new FileInputStream(keyMapFile);
         ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
         Map<Integer, KeyObject> keyPairMap = (Map<Integer, KeyObject>) objectInputStream.readObject();
-        //TODO check if this actually works
         this.feedValuesToChildren(keyPairMap);
     }
 
@@ -240,11 +252,6 @@ public class Parent implements Serializable {
             generator = KeyPairGenerator.getInstance("RSA");
             generator.initialize(2048);
         }
-    }*/
-
-    /*public void encryptFileAndStore(File file, double partLength, String fileExtension) throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
-        byte[] fileAsByte = FileUtil.fileToByteArr(file);
-        this.encryptAndStoreValue(fileAsByte, partLength, fileExtension);
     }*/
 
     /*public void encryptFileAndStore(File file, String fileExtension) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
