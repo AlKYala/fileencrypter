@@ -1,14 +1,20 @@
 package de.yalama.fileencrypter.Encrypter.Key;
 
+import com.nimbusds.oauth2.sdk.auth.Secret;
 import de.yalama.fileencrypter.Util.CryptoUtil;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.parameters.P;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.security.*;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
+import java.util.Base64;
+import javax.crypto.*;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
 
 //@Getter
 
@@ -21,26 +27,43 @@ import javax.crypto.NoSuchPaddingException;
 @Getter
 public class Child implements Serializable {
 
-    private KeyPair keyPair;
-    private byte[] encryptedPart;
+    private String encryptedPart;
+    private KeyObject key;
 
-    public Child(KeyPairGenerator kpGenerator) {
-        this.setKeyPair(kpGenerator.generateKeyPair());
+    public Child() {
+        this.key = new KeyObject();
     }
 
-    public void encryptAndStore(String toEncrypt) throws NoSuchAlgorithmException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException {
-        this.encryptedPart = CryptoUtil.encrypt(toEncrypt, keyPair.getPublic());
+    private String generateRandomSalt(String toEncrypt) {
+        return String.format("%dAMOGUS%d%d%s", this.hashCode(), "random".hashCode(),
+                this.hashCode() + this.key.hashCode(), toEncrypt);
     }
 
-    public void encryptAndStore(byte[] toEnCrypt) throws NoSuchAlgorithmException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException {
-        this.encryptedPart = CryptoUtil.encrypt(toEnCrypt, keyPair.getPublic());
+    public void encryptAndStore(String toEncrypt) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException, IOException, ClassNotFoundException {
+        IvParameterSpec spec = CryptoUtil.generateInitializationVector();
+        SecretKey sKey = CryptoUtil.generateKey(toEncrypt, this.generateRandomSalt(toEncrypt));
+        this.key.setIvParameterSpec(spec);
+        this.key.setSecretKey(sKey);
+        this.encryptContent(toEncrypt, "AES/CBC/PKCS5Padding");
     }
 
-    public String decrypt() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException {
-        return CryptoUtil.decrypt(this.encryptedPart, this.keyPair.getPrivate());
+    private void encryptContent(String toEncrypt, String algorithm) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, IOException, ClassNotFoundException {
+        Cipher cipher = Cipher.getInstance(algorithm);
+        cipher.init(Cipher.ENCRYPT_MODE, this.key.getSecretKey(), this.key.getIvParameterSpec());
+        this.encryptedPart = Base64.getEncoder().encodeToString(cipher.doFinal(toEncrypt.getBytes()));
     }
 
-    void removeKeyPair() {
-        this.keyPair = null;
+    private int getRandomLengthForKey(int length) {
+        return (int) Math.random() * length;
+    }
+
+    public void clearKeyObject() {
+        this.key = null;
+    }
+
+    public String decrypt() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IOException, ClassNotFoundException {
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.DECRYPT_MODE, this.key.getSecretKey(), this.key.getIvParameterSpec());
+        return new String(cipher.doFinal(Base64.getDecoder().decode(this.encryptedPart)));
     }
 }

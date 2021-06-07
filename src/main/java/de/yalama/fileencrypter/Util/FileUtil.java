@@ -1,7 +1,7 @@
 package de.yalama.fileencrypter.Util;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.*;
+import java.util.Base64;
 
 public class FileUtil {
 
@@ -18,4 +18,21 @@ public class FileUtil {
         return fileInBytes;
     }
 
+    public static String fileToBase64String(File file) {
+        byte[] fileInByteArr = FileUtil.fileToByteArr(file);
+        return Base64.getEncoder().encodeToString(fileInByteArr);
+    }
+
+    public static void writeFilePlainText(String fileName, String fileExtension, String plainText) throws IOException {
+        FileWriter file = new FileWriter(String.format("%s.%s", fileName, fileExtension));
+        BufferedWriter bw = new BufferedWriter(file);
+        try {
+            bw.write(plainText);
+            bw.close();
+            file.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
