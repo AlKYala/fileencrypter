@@ -42,6 +42,6 @@ public class FileencrypterApplication {
         p.extractAll("keyobject", "parent.file");
         Parent.loadParent("parent.file");
         p.loadKeyMap("keyobject.map");
-        System.out.println(p.decrypt());
+        p.decryptAndWriteToFile("text", "txt");
     }
 }

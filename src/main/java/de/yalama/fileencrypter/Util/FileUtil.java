@@ -22,4 +22,17 @@ public class FileUtil {
         byte[] fileInByteArr = FileUtil.fileToByteArr(file);
         return Base64.getEncoder().encodeToString(fileInByteArr);
     }
+
+    public static void writeFilePlainText(String fileName, String fileExtension, String plainText) throws IOException {
+        FileWriter file = new FileWriter(String.format("%s.%s", fileName, fileExtension));
+        BufferedWriter bw = new BufferedWriter(file);
+        try {
+            bw.write(plainText);
+            bw.close();
+            file.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

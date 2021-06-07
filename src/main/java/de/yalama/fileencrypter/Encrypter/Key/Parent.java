@@ -183,6 +183,10 @@ public class Parent implements Serializable {
         return sb.toString();
     }
 
+    public void decryptAndWriteToFile(String fileName, String fileExtension) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, IOException, NoSuchPaddingException, InvalidAlgorithmParameterException, ClassNotFoundException {
+        FileUtil.writeFilePlainText(fileName, fileExtension, this.decrypt());
+    }
+
     /*public String decrypt() throws InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {
         StringBuilder sb = new StringBuilder();
         for(Child child : children) {
