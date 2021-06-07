@@ -29,6 +29,6 @@ public class KeyObject implements Serializable {
     }
 
     public IvParameterSpec getIvParameterSpec() throws IOException, ClassNotFoundException {
-        return ByteUtil.byteArrToIvParameteSpec(this.ivParameterSpec);
+        return ByteUtil.byteArrToIvParameterSpec(this.ivParameterSpec);
     }
 }
