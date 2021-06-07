@@ -44,7 +44,8 @@ public class FileencrypterApplication {
         p.loadKeyMap("keyobject.map");
         p.decryptAndWriteToFile("text", "txt");*/
 
-        p.encryptFileAndStore("Speicher.mp4", 50000);
+        p.encryptFileAndStore("Speicher.mp4", 500000);
         p.decryptAndWriteToFile("test", "txt");
+        System.out.println(p.getFileExtension());
     }
 }

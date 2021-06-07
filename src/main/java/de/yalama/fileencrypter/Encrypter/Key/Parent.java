@@ -65,7 +65,6 @@ public class Parent implements Serializable {
 
     public void encryptFileAndStore(String path, double partLength) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, ClassNotFoundException {
         this.fileExtension = FileUtil.getExtensionFromFullFileName(path);
-
         this.encryptFileAndStore(new File(path), partLength);
     }
 
