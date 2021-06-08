@@ -7,6 +7,7 @@ import de.yalama.fileencrypter.Util.CryptoUtil;
 import de.yalama.fileencrypter.Util.FileUtil;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -186,7 +187,7 @@ public class Parent implements Serializable {
         }
     }
 
-    public String decrypt() throws BadPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, IllegalBlockSizeException, ClassNotFoundException, NoSuchPaddingException, InvalidKeyException, IOException {
+    public String decryptAndGetBase64() throws BadPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, IllegalBlockSizeException, ClassNotFoundException, NoSuchPaddingException, InvalidKeyException, IOException {
         StringBuilder sb = new StringBuilder();
         for(Child c : this.children) {
             sb.append(c.decrypt());
@@ -194,8 +195,12 @@ public class Parent implements Serializable {
         return sb.toString();
     }
 
-    public void decryptAndWriteToFile(String fileName, String fileExtension) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, IOException, NoSuchPaddingException, InvalidAlgorithmParameterException, ClassNotFoundException {
-        FileUtil.writeFilePlainText(fileName, fileExtension, this.decrypt());
+    public void decryptAndWriteToFile(String fileName) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, IOException, NoSuchPaddingException, InvalidAlgorithmParameterException, ClassNotFoundException {
+        if(fileExtension.equals(".txt")) {
+            FileUtil.writeFilePlainText(this.decryptAndGetBase64(), fileName, this.fileExtension);
+            return;
+        }
+        FileUtil.base64StringToFile(this.decryptAndGetBase64(), fileName, this.fileExtension);
     }
 
     /*public String decrypt() throws InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {

@@ -24,11 +24,11 @@ public class FileUtil {
         return Base64.getEncoder().encodeToString(fileInByteArr);
     }
 
-    public static void writeFilePlainText(String fileName, String fileExtension, String plainText) throws IOException {
+    public static void writeFilePlainText(String content, String fileName, String fileExtension) throws IOException {
         FileWriter file = new FileWriter(String.format("%s.%s", fileName, fileExtension));
         BufferedWriter bw = new BufferedWriter(file);
         try {
-            bw.write(plainText);
+            bw.write(content);
             bw.close();
             file.close();
         }
@@ -51,4 +51,20 @@ public class FileUtil {
     /*public static File getFileFromPath(String path) {
 
     }*/
+
+    public static void base64StringToFile(String base64Encoded, String fileName, String extension) {
+        byte[] content = Base64.getDecoder().decode(base64Encoded);
+        FileUtil.byteArrToFile(content, String.format("%s.%s", fileName, extension));
+    }
+
+    private static void byteArrToFile(byte[] arr, String fileName) {
+       FileOutputStream fileOutputStream = null;
+       try {
+           fileOutputStream = new FileOutputStream(fileName);
+           fileOutputStream.write(arr);
+           fileOutputStream.close();
+       } catch (Exception e) {
+           e.printStackTrace();
+       }
+    }
 }

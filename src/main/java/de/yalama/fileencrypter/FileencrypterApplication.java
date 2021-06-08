@@ -45,7 +45,6 @@ public class FileencrypterApplication {
         p.decryptAndWriteToFile("text", "txt");*/
 
         p.encryptFileAndStore("Speicher.mp4", 500000);
-        p.decryptAndWriteToFile("test", "txt");
-        System.out.println(p.getFileExtension());
+        p.decryptAndWriteToFile("test");
     }
 }
