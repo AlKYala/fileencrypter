@@ -30,7 +30,7 @@ public class FileencrypterApplication {
         //HottestUtil.fileToBase64EncryptDecrypt("bild.png", "ausgabe.txt");
         //System.exit(0);
         Parent p = new Parent();
-        p.encryptAndStoreValue("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin dictum euismod ligula sit amet aliquam. Fusce quis turpis et est semper efficitur. Etiam ac porttitor elit. Morbi scelerisque ante et nunc scelerisque, sit amet accumsan mi vulputate. Quisque at mattis metus. Nam lacinia semper magna, vel volutpat erat sollicitudin id. Interdum et malesuada fames ac ante ipsum primis in faucibus. Proin rutrum ex ac condimentum eleifend. Sed ac lacus ullamcorper, fringilla nisl ac, porta neque. Cras dignissim vehicula lorem vel consequat. In semper justo eu est lobortis, accumsan semper massa tempor. Nulla aliquet velit quis est pretium feugiat. Vivamus porta odio nisl, et semper justo imperdiet a. Praesent vitae tincidunt nibh. Cras non commodo magna, sed pretium diam.\n" +
+        /*p.encryptAndStoreValue("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin dictum euismod ligula sit amet aliquam. Fusce quis turpis et est semper efficitur. Etiam ac porttitor elit. Morbi scelerisque ante et nunc scelerisque, sit amet accumsan mi vulputate. Quisque at mattis metus. Nam lacinia semper magna, vel volutpat erat sollicitudin id. Interdum et malesuada fames ac ante ipsum primis in faucibus. Proin rutrum ex ac condimentum eleifend. Sed ac lacus ullamcorper, fringilla nisl ac, porta neque. Cras dignissim vehicula lorem vel consequat. In semper justo eu est lobortis, accumsan semper massa tempor. Nulla aliquet velit quis est pretium feugiat. Vivamus porta odio nisl, et semper justo imperdiet a. Praesent vitae tincidunt nibh. Cras non commodo magna, sed pretium diam.\n" +
                 "\n" +
                 "Nulla facilisi. Fusce sapien sem, tristique a nibh quis, rutrum volutpat lectus. Praesent rutrum orci nec dolor elementum, nec fringilla quam auctor. Sed placerat ut nibh in ultrices. Pellentesque porta efficitur dolor, dictum convallis lorem rutrum at. Aliquam erat volutpat. Aenean sed massa quis orci cursus eleifend. Vivamus mattis ultricies tellus vitae varius. Curabitur porta pulvinar mi at congue. Maecenas lorem leo, rhoncus id mollis eu, volutpat in purus. Cras nisi est, malesuada quis metus in, efficitur convallis nulla.\n" +
                 "\n" +
@@ -42,6 +42,9 @@ public class FileencrypterApplication {
         p.extractAll("keyobject", "parent.file");
         Parent.loadParent("parent.file");
         p.loadKeyMap("keyobject.map");
-        p.decryptAndWriteToFile("text", "txt");
+        p.decryptAndWriteToFile("text", "txt");*/
+
+        p.encryptFileAndStore("Speicher.mp4", 500000);
+        p.decryptAndWriteToFile("test");
     }
 }
