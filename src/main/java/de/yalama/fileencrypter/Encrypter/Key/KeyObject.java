@@ -1,9 +1,11 @@
 package de.yalama.fileencrypter.Encrypter.Key;
 
+import de.yalama.fileencrypter.Encrypter.Exceptions.KeyLockedException;
 import de.yalama.fileencrypter.Util.ByteUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.authentication.LockedException;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
@@ -16,19 +18,24 @@ public class KeyObject implements Serializable {
     private byte[] secretKey;
     private byte[] ivParameterSpec;
 
-    public void setSecretKey(SecretKey secretKey) throws IOException {
+    public void setData (SecretKey secretKey, IvParameterSpec ivParameterSpec) throws IOException {
+        this.setSecretKey(secretKey);
+        this.setIvParameterSpec(ivParameterSpec);
+    }
+
+    private void setSecretKey(SecretKey secretKey) throws IOException {
         this.secretKey = ByteUtil.secretKeyToByteArr(secretKey);
     }
 
-    public void setIvParameterSpec(IvParameterSpec ivParameterSpec) throws IOException {
+    private void setIvParameterSpec(IvParameterSpec ivParameterSpec) throws IOException {
         this.ivParameterSpec = ByteUtil.ivParameterSpecToByteArr(ivParameterSpec);
     }
 
-    public SecretKey getSecretKey() throws IOException, ClassNotFoundException {
+    public SecretKey getSecretKey() throws IOException, ClassNotFoundException, KeyLockedException {
         return ByteUtil.byteArrToSecretKey(this.secretKey);
     }
 
-    public IvParameterSpec getIvParameterSpec() throws IOException, ClassNotFoundException {
+    public IvParameterSpec getIvParameterSpec() throws IOException, ClassNotFoundException, KeyLockedException {
         return ByteUtil.byteArrToIvParameterSpec(this.ivParameterSpec);
     }
 }

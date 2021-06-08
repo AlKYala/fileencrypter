@@ -1,6 +1,7 @@
 package de.yalama.fileencrypter;
 
 import de.yalama.fileencrypter.Encrypter.Exceptions.InsecureExtractionException;
+import de.yalama.fileencrypter.Encrypter.Exceptions.KeyLockedException;
 import de.yalama.fileencrypter.Encrypter.Exceptions.KeyPairNotFoundException;
 import de.yalama.fileencrypter.Encrypter.Key.Parent;
 import de.yalama.fileencrypter.Util.HottestUtil;
@@ -20,7 +21,7 @@ import java.security.spec.InvalidKeySpecException;
 public class FileencrypterApplication {
 
     //just testing here
-    public static void main(String[] args) throws NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, KeyPairNotFoundException, IOException, InsecureExtractionException, ClassNotFoundException, InvalidKeySpecException, InvalidAlgorithmParameterException {
+    public static void main(String[] args) throws NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, KeyPairNotFoundException, IOException, InsecureExtractionException, ClassNotFoundException, InvalidKeySpecException, InvalidAlgorithmParameterException, KeyLockedException {
         /*SpringApplication.run(FileencrypterApplication.class, args);
         HottestUtil.testSimpleEncryptDecrypt();
         HottestUtil.storeAndLoadAndStoreParentToo();

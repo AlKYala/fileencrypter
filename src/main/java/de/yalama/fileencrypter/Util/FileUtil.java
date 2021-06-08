@@ -1,8 +1,11 @@
 package de.yalama.fileencrypter.Util;
 
+import de.yalama.fileencrypter.Encrypter.Key.KeyObject;
+
 import java.io.*;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Map;
 
 public class FileUtil {
 
@@ -47,10 +50,6 @@ public class FileUtil {
     public static String getExtensionFromFullFileName(File file) {
         return FileUtil.getExtensionFromFullFileName(file.getAbsolutePath());
     }
-    //TODO
-    /*public static File getFileFromPath(String path) {
-
-    }*/
 
     public static void base64StringToFile(String base64Encoded, String fileName, String extension) {
         byte[] content = Base64.getDecoder().decode(base64Encoded);
@@ -66,5 +65,18 @@ public class FileUtil {
        } catch (Exception e) {
            e.printStackTrace();
        }
+    }
+
+    public static void anyObjectToFile(Object o, String fileName, String fileExtension) {
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(String.format("%s.%s", fileName, fileExtension));
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(o);
+            objectOutputStream.close();
+            fileOutputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

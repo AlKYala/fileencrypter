@@ -41,18 +41,4 @@ public class FileHandler {
             e.printStackTrace();
         }
     }
-
-    /* Experimental and deprecated
-    public void extractKeyMap(Map<Integer, KeyPair> childrenKeyPair, String fileName) throws IOException, KeyPairNotFoundException {
-        FileOutputStream fileOutputStream = null;
-        try {
-            fileOutputStream = new FileOutputStream(String.format("%s.map", fileName));
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(childrenKeyPair);
-            objectOutputStream.close();
-            fileOutputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
 }
