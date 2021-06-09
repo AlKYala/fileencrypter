@@ -1,20 +1,18 @@
-package de.yalama.fileencrypter.Encrypter.Key;
+package de.yalama.fileencrypter.Encrypter.Content;
 
-import com.nimbusds.oauth2.sdk.auth.Secret;
+import de.yalama.fileencrypter.Encrypter.Exceptions.KeyLockedException;
+import de.yalama.fileencrypter.Encrypter.Key.Key;
 import de.yalama.fileencrypter.Util.CryptoUtil;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.security.core.parameters.P;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Arrays;
 import java.util.Base64;
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.PBEKeySpec;
 
 //@Getter
 
@@ -28,10 +26,10 @@ import javax.crypto.spec.PBEKeySpec;
 public class Child implements Serializable {
 
     private String encryptedPart;
-    private KeyObject key;
+    private Key key;
 
     public Child() {
-        this.key = new KeyObject();
+        this.key = new Key();
     }
 
     private String generateRandomSalt(String toEncrypt) {
@@ -39,15 +37,14 @@ public class Child implements Serializable {
                 this.hashCode() + this.key.hashCode(), toEncrypt);
     }
 
-    public void encryptAndStore(String toEncrypt) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException, IOException, ClassNotFoundException {
+    public void encryptAndStore(String toEncrypt) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException, IOException, ClassNotFoundException, KeyLockedException {
         IvParameterSpec spec = CryptoUtil.generateInitializationVector();
         SecretKey sKey = CryptoUtil.generateKey(toEncrypt, this.generateRandomSalt(toEncrypt));
-        this.key.setIvParameterSpec(spec);
-        this.key.setSecretKey(sKey);
+        this.key.setData(sKey, spec);
         this.encryptContent(toEncrypt, "AES/CBC/PKCS5Padding");
     }
 
-    private void encryptContent(String toEncrypt, String algorithm) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, IOException, ClassNotFoundException {
+    private void encryptContent(String toEncrypt, String algorithm) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, IOException, ClassNotFoundException, KeyLockedException {
         Cipher cipher = Cipher.getInstance(algorithm);
         cipher.init(Cipher.ENCRYPT_MODE, this.key.getSecretKey(), this.key.getIvParameterSpec());
         this.encryptedPart = Base64.getEncoder().encodeToString(cipher.doFinal(toEncrypt.getBytes()));
@@ -61,7 +58,7 @@ public class Child implements Serializable {
         this.key = null;
     }
 
-    public String decrypt() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IOException, ClassNotFoundException {
+    public String decrypt() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IOException, ClassNotFoundException, KeyLockedException {
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, this.key.getSecretKey(), this.key.getIvParameterSpec());
         return new String(cipher.doFinal(Base64.getDecoder().decode(this.encryptedPart)));

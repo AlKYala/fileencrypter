@@ -1,0 +1,100 @@
+    /*public String decrypt() throws InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {
+        StringBuilder sb = new StringBuilder();
+        for(Child child : children) {
+            sb.append(new String(child.decrypt()));
+        }
+        return sb.toString();
+    }*/
+
+    /* Deprecated because of base64 instead of byte[] is used
+    public void decryptAndWriteToFile(String fileName, String fileExtension) throws FileNotFoundException, IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+        byte[] decryptedContent = this.decrypt();
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(String.format("%s.%s", fileName, fileExtension));
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(decryptedContent);
+            objectOutputStream.close();
+            fileOutputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public byte[] decrypt() throws InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, IllegalBlockSizeException, NoSuchPaddingException {
+        List<Byte> bytes = new ArrayList<Byte>();
+        for(Child child: children) {
+            Parent.addAllFromArrayToList(bytes, child.decrypt());
+        }
+        byte[] retVal = new byte[bytes.size()];
+        return listToArr(bytes);
+    }
+
+    //TODO auslagern
+    private static void addAllFromArrayToList(List<Byte> list, byte[] arr) {
+        for(byte val: arr) {
+            list.add(val);
+        }
+    }
+    //TODO auslagern
+    private static byte[] listToArr(List<Byte> list) {
+        byte[] retArr = new byte[list.size()];
+        for(int i = 0; i < retArr.length; i++) {
+            retArr[i] = list.get(i);
+        }
+        return retArr;
+    }*/
+
+    /*private void initKeyPairGenerator() throws NoSuchAlgorithmException {
+        if(Parent.generator == null) {
+            generator = KeyPairGenerator.getInstance("RSA");
+            generator.initialize(2048);
+        }
+    }*/
+
+    /*public void encryptFileAndStore(File file, String fileExtension) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
+        this.encryptFileAndStore(file, 5000d, fileExtension);
+    }*/
+
+    /*public void encryptAndStoreValue(byte[] value, double partLength, String fileExtension) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException {
+        Child child = new Child(this.generator);
+        this.fileExtension = fileExtension;
+        int sum = 0;
+        while(sum < value.length) {
+            int lengthToEncrypt = (int) (Math.random() * partLength);
+            lengthToEncrypt = (sum + lengthToEncrypt > value.length) ? value.length - (sum) : lengthToEncrypt;
+            byte[] partToEncrypt = Arrays.copyOfRange(value, sum, sum+lengthToEncrypt);
+            child.encryptAndStore(partToEncrypt);
+            this.children.add(child);
+            child = new Child(this.generator);
+            sum += lengthToEncrypt;
+        }
+    }
+
+    public void encryptAndStoreValue(byte[] value, String fileExtension) throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
+        this.encryptAndStoreValue(value, 50000d, fileExtension);
+    }*/
+
+
+    /* Experimental and deprecated Von Filehandler.java
+    public void extractKeyMap(Map<Integer, KeyPair> childrenKeyPair, String fileName) throws IOException, KeyPairNotFoundException {
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(String.format("%s.map", fileName));
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(childrenKeyPair);
+            objectOutputStream.close();
+            fileOutputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }*/
+    
+// von CryptoUtil
+
+
+    /*public static String decrypt(byte[] encryptedInput, PrivateKey privateKey) throws NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeyException {
+        Cipher decrypter = CryptoUtil.getRSACipher(Cipher.DECRYPT_MODE, privateKey);
+        return new String(decrypter.doFinal(encryptedInput), StandardCharsets.UTF_8);
+    }*/
