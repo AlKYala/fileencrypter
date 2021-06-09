@@ -45,7 +45,9 @@ public class FileencrypterApplication {
         p.loadKeyMap("keyobject.map");
         p.decryptAndWriteToFile("text", "txt");*/
 
-        p.encryptFileAndStore("Speicher.mp4", 500000);
+        p.encryptFileAndStore("jjwt-0.9.1.jar", 500000);
+        p.extractAll("map", "testObject");
+        p.loadKeyMap("map.map");
         p.decryptAndWriteToFile("test");
     }
 }

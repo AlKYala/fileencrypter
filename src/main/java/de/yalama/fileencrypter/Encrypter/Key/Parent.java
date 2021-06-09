@@ -42,7 +42,6 @@ public class Parent implements Serializable {
         return (Parent) objectInputStream.readObject();
     }
 
-
     public void encryptAndStoreValue(String value, double partLength) throws NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, InvalidKeyException, IllegalBlockSizeException, InvalidKeySpecException, InvalidAlgorithmParameterException, IOException, ClassNotFoundException, KeyLockedException {
         Child child = new Child();
         int sum = 0;
@@ -150,7 +149,7 @@ public class Parent implements Serializable {
      * @throws KeyPairNotFoundException
      */
     private void extractKeyMap(String fileName) throws IOException, KeyPairNotFoundException {
-        FileUtil.anyObjectToFile(this.getKeyPairOfChildren(), "keyMap", ".map");
+        FileUtil.anyObjectToFile(this.getKeyPairOfChildren(), fileName, "map");
     }
 
     public void loadKeyMap(String filenameWithExtension) throws IOException, ClassNotFoundException {

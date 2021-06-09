@@ -90,3 +90,11 @@
             e.printStackTrace();
         }
     }*/
+    
+// von CryptoUtil
+
+
+    /*public static String decrypt(byte[] encryptedInput, PrivateKey privateKey) throws NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeyException {
+        Cipher decrypter = CryptoUtil.getRSACipher(Cipher.DECRYPT_MODE, privateKey);
+        return new String(decrypter.doFinal(encryptedInput), StandardCharsets.UTF_8);
+    }*/
