@@ -1,11 +1,8 @@
 package de.yalama.fileencrypter.Util;
 
-import de.yalama.fileencrypter.Encrypter.Key.KeyObject;
-
 import java.io.*;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.Map;
 
 public class FileUtil {
 

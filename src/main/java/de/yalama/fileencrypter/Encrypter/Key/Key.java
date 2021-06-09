@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 @NoArgsConstructor
-public class KeyObject implements Serializable {
+public class Key implements Serializable {
 
     private byte[] secretKey;
     private byte[] ivParameterSpec;

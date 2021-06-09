@@ -1,18 +1,16 @@
-package de.yalama.fileencrypter.Encrypter.Key;
+package de.yalama.fileencrypter.Encrypter.Content;
 
 import de.yalama.fileencrypter.Encrypter.Exceptions.InsecureExtractionException;
 import de.yalama.fileencrypter.Encrypter.Exceptions.KeyLockedException;
 import de.yalama.fileencrypter.Encrypter.Exceptions.KeyPairNotFoundException;
-import de.yalama.fileencrypter.Util.CryptoUtil;
+import de.yalama.fileencrypter.Encrypter.Key.Key;
 import de.yalama.fileencrypter.Util.FileUtil;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
 import java.io.*;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
@@ -125,8 +123,8 @@ public class Parent implements Serializable {
      * @return a Map<Integer, KeyMap> objected implemented in HashMap, see description.
      * @throws KeyPairNotFoundException thrown when a child object with no keyPair is found - which only happens if a child object keyMap is cleared
      */
-    private Map<Integer, KeyObject> getKeyPairOfChildren() throws KeyPairNotFoundException {
-        Map<Integer, KeyObject> keyPairMap = new HashMap<Integer, KeyObject>();
+    private Map<Integer, Key> getKeyPairOfChildren() throws KeyPairNotFoundException {
+        Map<Integer, Key> keyPairMap = new HashMap<Integer, Key>();
         for(int i = 0; i < children.size(); i++) {
             if(children.get(i).getKey() == null) {
                 throw new KeyPairNotFoundException("Keypair of child not found - probably deleted already");
@@ -164,11 +162,11 @@ public class Parent implements Serializable {
     private void loadKeyMapData(File keyMapFile) throws IOException, ClassNotFoundException {
         FileInputStream fileInputStream = new FileInputStream(keyMapFile);
         ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-        Map<Integer, KeyObject> keyPairMap = (Map<Integer, KeyObject>) objectInputStream.readObject();
+        Map<Integer, Key> keyPairMap = (Map<Integer, Key>) objectInputStream.readObject();
         this.feedValuesToChildren(keyPairMap);
     }
 
-    private void feedValuesToChildren(Map<Integer, KeyObject> map) {
+    private void feedValuesToChildren(Map<Integer, Key> map) {
         for(Integer index : map.keySet()) {
             this.children.get(index).setKey(map.get(index));
         }

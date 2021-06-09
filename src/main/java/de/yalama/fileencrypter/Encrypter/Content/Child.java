@@ -1,21 +1,18 @@
-package de.yalama.fileencrypter.Encrypter.Key;
+package de.yalama.fileencrypter.Encrypter.Content;
 
-import com.nimbusds.oauth2.sdk.auth.Secret;
 import de.yalama.fileencrypter.Encrypter.Exceptions.KeyLockedException;
+import de.yalama.fileencrypter.Encrypter.Key.Key;
 import de.yalama.fileencrypter.Util.CryptoUtil;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.security.core.parameters.P;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Arrays;
 import java.util.Base64;
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.PBEKeySpec;
 
 //@Getter
 
@@ -29,10 +26,10 @@ import javax.crypto.spec.PBEKeySpec;
 public class Child implements Serializable {
 
     private String encryptedPart;
-    private KeyObject key;
+    private Key key;
 
     public Child() {
-        this.key = new KeyObject();
+        this.key = new Key();
     }
 
     private String generateRandomSalt(String toEncrypt) {
