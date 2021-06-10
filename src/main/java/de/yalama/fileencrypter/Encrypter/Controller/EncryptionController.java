@@ -34,8 +34,7 @@ public class EncryptionController {
      * @return An array of files (by default of size 2) where the first index holds the key for the file
      * and the second the encrypted content itself
      */
-    @PostMapping(value = "/upload",
-            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
     public File[] encrypt(MultipartFile file) throws NoSuchAlgorithmException, IOException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, KeyLockedException, ClassNotFoundException, InsecureExtractionException, KeyPairNotFoundException {
         System.out.println(file.getOriginalFilename());
