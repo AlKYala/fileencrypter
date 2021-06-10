@@ -6,10 +6,7 @@ import de.yalama.fileencrypter.Encrypter.Exceptions.KeyLockedException;
 import de.yalama.fileencrypter.Encrypter.Exceptions.KeyPairNotFoundException;
 import de.yalama.fileencrypter.Encrypter.FileHandler.FileHandler;
 import de.yalama.fileencrypter.Util.FileUtil;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -22,7 +19,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
 @RestController
-@RequestMapping("/crypter")
+@RequestMapping("/encrypt")
 public class EncryptionController {
 
     /**
@@ -31,7 +28,7 @@ public class EncryptionController {
      * @return An array of files (by default of size 2) where the first index holds the key for the file
      * and the second the encrypted content itself
      */
-    @GetMapping("/encrypt")
+    @PostMapping("/encrypt")
     public File[] encrypt(@RequestBody File file) throws NoSuchAlgorithmException, IOException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, KeyLockedException, ClassNotFoundException, InsecureExtractionException, KeyPairNotFoundException {
         return this.encryptFile(file, 5000000);
     }
@@ -52,11 +49,4 @@ public class EncryptionController {
         return FileHandler.wrapFiles(filePaths);
     }
 
-    private File decryptFiles(String mapFilePath, String contentFilePath) throws NoSuchAlgorithmException, IOException, ClassNotFoundException, BadPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, KeyLockedException, NoSuchPaddingException, InvalidKeyException {
-        Parent p = new Parent();
-        p.setFileExtension(FileUtil.getExtensionFromFullFileName(contentFilePath));
-        p.loadKeyMap(mapFilePath);
-        p.decryptAndWriteToFile(contentFilePath);
-        return new File(String.format("%s.%s", contentFilePath, p.getFileExtension()));
-    }
 }
