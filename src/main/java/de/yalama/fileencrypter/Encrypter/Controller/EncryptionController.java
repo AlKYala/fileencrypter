@@ -5,6 +5,7 @@ import de.yalama.fileencrypter.Encrypter.Exceptions.InsecureExtractionException;
 import de.yalama.fileencrypter.Encrypter.Exceptions.KeyLockedException;
 import de.yalama.fileencrypter.Encrypter.Exceptions.KeyPairNotFoundException;
 import de.yalama.fileencrypter.Encrypter.FileHandler.FileHandler;
+import de.yalama.fileencrypter.Util.Base64Util;
 import de.yalama.fileencrypter.Util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Required;
@@ -37,10 +38,7 @@ public class EncryptionController {
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
     public File[] encrypt(MultipartFile file) throws NoSuchAlgorithmException, IOException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, KeyLockedException, ClassNotFoundException, InsecureExtractionException, KeyPairNotFoundException {
-        System.out.println(file.getOriginalFilename());
-        //return this.encryptFile(file, 5000000);
-        //TODO
-        return null;
+        return this.encryptFile(file.getBytes(), 50000000, file.getOriginalFilename());
     }
 
     /**
@@ -59,8 +57,11 @@ public class EncryptionController {
         return FileHandler.wrapFiles(filePaths);
     }
     //TODO
-    private File[] encryptFile(byte[] fileInByteArr, double partLength, String fileName) {
-        return null;
+    private File[] encryptFile(byte[] fileInByteArr, double partLength, String fileName) throws NoSuchAlgorithmException {
+        String[] names = fileName.split("[.]");
+        Parent p = new Parent();
+        p.encryptBase64AndStore(Base64Util.byteArrToBase64(fileInByteArr), names[0], names[1], 5000000);
+        //TODO see Parent.java
     }
 
 }

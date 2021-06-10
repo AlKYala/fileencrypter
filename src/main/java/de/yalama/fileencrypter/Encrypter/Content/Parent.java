@@ -4,6 +4,7 @@ import de.yalama.fileencrypter.Encrypter.Exceptions.InsecureExtractionException;
 import de.yalama.fileencrypter.Encrypter.Exceptions.KeyLockedException;
 import de.yalama.fileencrypter.Encrypter.Exceptions.KeyPairNotFoundException;
 import de.yalama.fileencrypter.Encrypter.Key.Key;
+import de.yalama.fileencrypter.Util.Base64Util;
 import de.yalama.fileencrypter.Util.FileUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +29,7 @@ public class Parent implements Serializable {
     private List<Child> children;
     //private FileHandler fileHandler;
     private String fileExtension;
+    private String fileName;
 
     public Parent() throws NoSuchAlgorithmException {
         this.children = new ArrayList<Child>();
@@ -69,6 +71,10 @@ public class Parent implements Serializable {
         String fileAsBase64 = FileUtil.fileToBase64String(file);
         this.fileExtension = FileUtil.getExtensionFromFullFileName(file);
         this.encryptAndStoreValue(fileAsBase64, partLength);
+    }
+
+    public void encryptBase64AndStore(String base64, String fileName, String fileExtension, double partLength) {
+        //TODO
     }
 
     /**
@@ -185,10 +191,8 @@ public class Parent implements Serializable {
             FileUtil.writeFilePlainText(this.decryptAndGetBase64(), fileName, this.fileExtension);
             return;
         }
-        FileUtil.base64StringToFile(this.decryptAndGetBase64(), fileName, this.fileExtension);
+        Base64Util.base64StringToFile(this.decryptAndGetBase64(), fileName, this.fileExtension);
     }
-
-
 }
 
 /**

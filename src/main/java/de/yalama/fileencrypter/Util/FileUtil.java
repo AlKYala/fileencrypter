@@ -48,12 +48,7 @@ public class FileUtil {
         return FileUtil.getExtensionFromFullFileName(file.getAbsolutePath());
     }
 
-    public static void base64StringToFile(String base64Encoded, String fileName, String extension) {
-        byte[] content = Base64.getDecoder().decode(base64Encoded);
-        FileUtil.byteArrToFile(content, String.format("%s.%s", fileName, extension));
-    }
-
-    private static void byteArrToFile(byte[] arr, String fileName) {
+    static void byteArrToFile(byte[] arr, String fileName) {
        FileOutputStream fileOutputStream = null;
        try {
            fileOutputStream = new FileOutputStream(fileName);
