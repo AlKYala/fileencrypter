@@ -6,11 +6,16 @@ import de.yalama.fileencrypter.Encrypter.Exceptions.KeyLockedException;
 import de.yalama.fileencrypter.Encrypter.Exceptions.KeyPairNotFoundException;
 import de.yalama.fileencrypter.Encrypter.FileHandler.FileHandler;
 import de.yalama.fileencrypter.Util.FileUtil;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
@@ -20,6 +25,7 @@ import java.security.spec.InvalidKeySpecException;
 
 @RestController
 @RequestMapping("/encrypt")
+@RequiredArgsConstructor
 public class EncryptionController {
 
     /**
@@ -28,9 +34,14 @@ public class EncryptionController {
      * @return An array of files (by default of size 2) where the first index holds the key for the file
      * and the second the encrypted content itself
      */
-    @PostMapping("/encrypt")
-    public File[] encrypt(@RequestBody File file) throws NoSuchAlgorithmException, IOException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, KeyLockedException, ClassNotFoundException, InsecureExtractionException, KeyPairNotFoundException {
-        return this.encryptFile(file, 5000000);
+    @PostMapping(value = "/upload",
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE})
+    public File[] encrypt(MultipartFile file) throws NoSuchAlgorithmException, IOException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, KeyLockedException, ClassNotFoundException, InsecureExtractionException, KeyPairNotFoundException {
+        System.out.println(file.getOriginalFilename());
+        //return this.encryptFile(file, 5000000);
+        //TODO
+        return null;
     }
 
     /**
@@ -47,6 +58,10 @@ public class EncryptionController {
         p.extractAll("map", "encrypted.file");
         String[] filePaths = new String[] {"map.map", "encrypted.file"};
         return FileHandler.wrapFiles(filePaths);
+    }
+    //TODO
+    private File[] encryptFile(byte[] fileInByteArr, double partLength, String fileName) {
+        return null;
     }
 
 }
