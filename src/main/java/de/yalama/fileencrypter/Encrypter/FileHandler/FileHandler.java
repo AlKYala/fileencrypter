@@ -7,35 +7,7 @@ import lombok.Setter;
 
 import java.io.*;
 
-@Setter
-@Getter
-@NoArgsConstructor
 public class FileHandler {
-
-    private String fileExtension;
-
-    //TODO input file - via REST call?
-
-    public byte[] fileToByteArr(File file, String fileExtension) {
-        this.fileExtension = fileExtension;
-        return FileUtil.fileToByteArr(file);
-    }
-
-    public void generateFile(byte[] bArr, String fileName, String fileExtension) throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream(fileName);
-        try {
-            fileOutputStream = new FileOutputStream(String.format("%s.%s", fileName, fileExtension));
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.write(bArr);
-            objectOutputStream.close();
-            fileOutputStream.close();
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      * Helps trigger downloads in the controller by taking
      * filepaths, making files of them and returning an array of them
