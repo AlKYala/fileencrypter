@@ -2,7 +2,6 @@ package de.yalama.fileencrypter.Encrypter.Controller;
 
 import de.yalama.fileencrypter.Encrypter.Content.Parent;
 import de.yalama.fileencrypter.Encrypter.Exceptions.InsecureExtractionException;
-import de.yalama.fileencrypter.Encrypter.Exceptions.KeyLockedException;
 import de.yalama.fileencrypter.Encrypter.Exceptions.KeyPairNotFoundException;
 import de.yalama.fileencrypter.Encrypter.FileHandler.FileHandler;
 import de.yalama.fileencrypter.Util.Base64Util;
@@ -37,7 +36,7 @@ public class EncryptionController {
      */
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public File[] encrypt(MultipartFile file) throws NoSuchAlgorithmException, IOException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, KeyLockedException, ClassNotFoundException, InsecureExtractionException, KeyPairNotFoundException {
+    public File[] encrypt(MultipartFile file) throws NoSuchAlgorithmException, IOException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, ClassNotFoundException, InsecureExtractionException, KeyPairNotFoundException {
         return this.encryptFile(file.getBytes(), 50000000, file.getOriginalFilename());
     }
 
@@ -49,7 +48,7 @@ public class EncryptionController {
      * @return An array of files (by default of size 2) where the first index holds the key for the file
      *      * and the second the encrypted content itself
      */
-    private File[] encryptFile(File file, double partLength) throws NoSuchAlgorithmException, IOException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, KeyLockedException, ClassNotFoundException, InsecureExtractionException, KeyPairNotFoundException {
+    private File[] encryptFile(File file, double partLength) throws NoSuchAlgorithmException, IOException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, ClassNotFoundException, InsecureExtractionException, KeyPairNotFoundException {
         Parent p = new Parent();
         p.encryptFileAndStore(file, partLength);
         p.extractAll("map", "encrypted.file");

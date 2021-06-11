@@ -1,7 +1,6 @@
 package de.yalama.fileencrypter.Encrypter.Content;
 
 import de.yalama.fileencrypter.Encrypter.Exceptions.InsecureExtractionException;
-import de.yalama.fileencrypter.Encrypter.Exceptions.KeyLockedException;
 import de.yalama.fileencrypter.Encrypter.Exceptions.KeyPairNotFoundException;
 import de.yalama.fileencrypter.Encrypter.Key.Key;
 import de.yalama.fileencrypter.Util.Base64Util;
@@ -42,7 +41,7 @@ public class Parent implements Serializable {
         return (Parent) objectInputStream.readObject();
     }
 
-    public void encryptAndStoreValue(String value, double partLength) throws NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, InvalidKeyException, IllegalBlockSizeException, InvalidKeySpecException, InvalidAlgorithmParameterException, IOException, ClassNotFoundException, KeyLockedException {
+    public void encryptAndStoreValue(String value, double partLength) throws NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, InvalidKeyException, IllegalBlockSizeException, InvalidKeySpecException, InvalidAlgorithmParameterException, IOException, ClassNotFoundException {
         Child child = new Child();
         int sum = 0;
         while(sum < value.length()) {
@@ -58,12 +57,18 @@ public class Parent implements Serializable {
         }
     }
 
-    public void encryptAndStoreValue(String value) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException, InvalidAlgorithmParameterException, IOException, ClassNotFoundException, KeyLockedException {
+    public void encryptAndStoreValue(String value) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException, InvalidAlgorithmParameterException, IOException, ClassNotFoundException {
         this.encryptAndStoreValue(value, 5000d);
     }
 
     public void encryptBase64AndStore(String base64, String fileName, String fileExtension, double partLength) {
         //TODO
+    }
+
+    public void encryptFileAndStore(File file, double partLength) throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException, ClassNotFoundException, InvalidAlgorithmParameterException, InvalidKeySpecException, IOException {
+        String fileAsBase64 = FileUtil.fileToBase64String(file);
+        this.fileExtension = FileUtil.getExtensionFromFullFileName(file);
+        this.encryptAndStoreValue(fileAsBase64, partLength);
     }
 
     /**
@@ -167,7 +172,7 @@ public class Parent implements Serializable {
         }
     }
 
-    public String decryptAndGetBase64() throws BadPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, IllegalBlockSizeException, ClassNotFoundException, NoSuchPaddingException, InvalidKeyException, IOException, KeyLockedException {
+    public String decryptAndGetBase64() throws BadPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, IllegalBlockSizeException, ClassNotFoundException, NoSuchPaddingException, InvalidKeyException, IOException {
         StringBuilder sb = new StringBuilder();
         for(Child c : this.children) {
             sb.append(c.decrypt());
@@ -175,7 +180,7 @@ public class Parent implements Serializable {
         return sb.toString();
     }
 
-    public void decryptAndWriteToFile(String fileName) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, IOException, NoSuchPaddingException, InvalidAlgorithmParameterException, ClassNotFoundException, KeyLockedException {
+    public void decryptAndWriteToFile(String fileName) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, IOException, NoSuchPaddingException, InvalidAlgorithmParameterException, ClassNotFoundException {
         if(fileExtension.equals(".txt")) {
             FileUtil.writeFilePlainText(this.decryptAndGetBase64(), fileName, this.fileExtension);
             return;

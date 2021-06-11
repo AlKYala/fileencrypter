@@ -1,7 +1,6 @@
 package de.yalama.fileencrypter.Encrypter.Controller;
 
 import de.yalama.fileencrypter.Encrypter.Content.Parent;
-import de.yalama.fileencrypter.Encrypter.Exceptions.KeyLockedException;
 import de.yalama.fileencrypter.Util.FileUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +20,7 @@ public class DecryptionController {
 
     //TODO schnittstelle nach außen
 
-    private File decryptFiles(String mapFilePath, String contentFilePath) throws NoSuchAlgorithmException, IOException, ClassNotFoundException, BadPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, KeyLockedException, NoSuchPaddingException, InvalidKeyException {
+    private File decryptFiles(String mapFilePath, String contentFilePath) throws NoSuchAlgorithmException, IOException, ClassNotFoundException, BadPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, InvalidKeyException {
         Parent p = new Parent();
         p.setFileExtension(FileUtil.getExtensionFromFullFileName(contentFilePath));
         p.loadKeyMap(mapFilePath);

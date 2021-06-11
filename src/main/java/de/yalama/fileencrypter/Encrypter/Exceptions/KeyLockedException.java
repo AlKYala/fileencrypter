@@ -1,4 +1,4 @@
-package de.yalama.fileencrypter.Encrypter.Exceptions;
+/*package de.yalama.fileencrypter.Encrypter.Exceptions;
 
 public class KeyLockedException extends FileEncrypterException {
     public KeyLockedException(String message) {
@@ -9,3 +9,4 @@ public class KeyLockedException extends FileEncrypterException {
         super("Exception: Unlock this file first before you can use it");
     }
 }
+*/

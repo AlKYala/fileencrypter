@@ -1,6 +1,5 @@
 package de.yalama.fileencrypter.Encrypter.Key;
 
-import de.yalama.fileencrypter.Encrypter.Exceptions.KeyLockedException;
 import de.yalama.fileencrypter.Util.ByteUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,11 +30,11 @@ public class Key implements Serializable {
         this.ivParameterSpec = ByteUtil.ivParameterSpecToByteArr(ivParameterSpec);
     }
 
-    public SecretKey getSecretKey() throws IOException, ClassNotFoundException, KeyLockedException {
+    public SecretKey getSecretKey() throws IOException, ClassNotFoundException {
         return ByteUtil.byteArrToSecretKey(this.secretKey);
     }
 
-    public IvParameterSpec getIvParameterSpec() throws IOException, ClassNotFoundException, KeyLockedException {
+    public IvParameterSpec getIvParameterSpec() throws IOException, ClassNotFoundException {
         return ByteUtil.byteArrToIvParameterSpec(this.ivParameterSpec);
     }
 }
