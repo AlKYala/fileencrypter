@@ -50,11 +50,7 @@ public class Child implements Serializable {
         this.encryptedPart = Base64.getEncoder().encodeToString(cipher.doFinal(toEncrypt.getBytes()));
     }
 
-    private int getRandomLengthForKey(int length) {
-        return (int) Math.random() * length;
-    }
-
-    public void clearKeyObject() {
+    public void clearKey() {
         this.key = null;
     }
 
