@@ -59,12 +59,12 @@ public class FileUtil {
        }
     }
 
-    public static void anyObjectToFile(Object o, String fileName, String fileExtension) {
+    public static void anyObjectToFile(Object obj, String fileName, String fileExtension) {
         FileOutputStream fileOutputStream = null;
         try {
             fileOutputStream = new FileOutputStream(String.format("%s.%s", fileName, fileExtension));
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(o);
+            objectOutputStream.writeObject(obj);
             objectOutputStream.close();
             fileOutputStream.close();
         } catch (Exception e) {
