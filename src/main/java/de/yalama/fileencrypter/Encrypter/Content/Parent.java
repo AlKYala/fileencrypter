@@ -61,8 +61,10 @@ public class Parent implements Serializable {
         this.encryptAndStoreValue(value, 5000d);
     }
 
-    public void encryptBase64AndStore(String base64, String fileName, String fileExtension, double partLength) {
-        //TODO
+    public void encryptBase64AndStore(String base64, String fileName, String fileExtension, double partLength) throws IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException, BadPaddingException, InvalidKeySpecException, IllegalBlockSizeException, ClassNotFoundException {
+        this.encryptAndStoreValue(base64, partLength);
+        this.fileExtension = fileExtension;
+        this.fileName = fileName;
     }
 
     public void encryptFileAndStore(File file, double partLength) throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException, ClassNotFoundException, InvalidAlgorithmParameterException, InvalidKeySpecException, IOException {
@@ -170,6 +172,14 @@ public class Parent implements Serializable {
         for(Integer index : map.keySet()) {
             this.children.get(index).setKey(map.get(index));
         }
+    }
+
+    public String getBase64() {
+        StringBuilder sb = new StringBuilder();
+        for(Child c : this.children) {
+            sb.append(c.getEncryptedPart());
+        }
+        return sb.toString();
     }
 
     public String decryptAndGetBase64() throws BadPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, IllegalBlockSizeException, ClassNotFoundException, NoSuchPaddingException, InvalidKeyException, IOException {
