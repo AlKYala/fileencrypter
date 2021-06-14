@@ -1,5 +1,7 @@
 package de.yalama.fileencrypter.Util;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.*;
 import java.util.Arrays;
 import java.util.Base64;
@@ -40,8 +42,12 @@ public class FileUtil {
     public static String getExtensionFromFullFileName(String fullFileName) {
         String[] split = fullFileName.split("[.]");
         //debug
-        System.out.println(Arrays.toString(split));
+        //System.out.println(Arrays.toString(split));
         return (split.length < 2) ? ".txt" : split[split.length-1];
+    }
+
+    public static String[] getFileNameAndExtensionFromFullFileName(String fullFileName) {
+        return fullFileName.split("[.]");
     }
 
     public static String getExtensionFromFullFileName(File file) {
@@ -84,5 +90,9 @@ public class FileUtil {
             files[i] = new File(paths[i]);
         }
         return files;
+    }
+
+    public static byte[] multipartFileToByteArr(MultipartFile file) throws IOException {
+        return file.getBytes();
     }
 }
