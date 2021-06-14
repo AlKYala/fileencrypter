@@ -1,9 +1,4 @@
-package de.yalama.fileencrypter.Encrypter.FileHandler;
-
-import de.yalama.fileencrypter.Util.FileUtil;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+package de.yalama.fileencrypter.FileHandler;
 
 import java.io.*;
 

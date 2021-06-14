@@ -1,10 +1,7 @@
-package de.yalama.fileencrypter.Encrypter.Key;
+package de.yalama.fileencrypter.Crypto.Key;
 
 import de.yalama.fileencrypter.Util.ByteUtil;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.security.authentication.LockedException;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;

@@ -1,9 +1,8 @@
-package de.yalama.fileencrypter.Encrypter.Controller;
+package de.yalama.fileencrypter.Crypto.Decryption.Service;
 
-import de.yalama.fileencrypter.Encrypter.Content.Parent;
+import de.yalama.fileencrypter.Crypto.Data.Model.Parent;
 import de.yalama.fileencrypter.Util.FileUtil;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Service;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -14,9 +13,8 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-@RestController
-@RequestMapping("/decrypt")
-public class DecryptionController {
+@Service
+public class DecryptionService {
 
     //TODO schnittstelle nach außen
 

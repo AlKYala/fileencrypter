@@ -1,43 +1,32 @@
-package de.yalama.fileencrypter.Encrypter.Controller;
+package de.yalama.fileencrypter.Crypto.Encryption.Service;
 
-import com.nimbusds.jose.util.IOUtils;
-import de.yalama.fileencrypter.Encrypter.Content.Parent;
-import de.yalama.fileencrypter.Encrypter.Exceptions.InsecureExtractionException;
-import de.yalama.fileencrypter.Encrypter.Exceptions.KeyPairNotFoundException;
-import de.yalama.fileencrypter.Encrypter.FileHandler.FileHandler;
-import de.yalama.fileencrypter.Util.Base64Util;
+import de.yalama.fileencrypter.Crypto.Data.Model.Parent;
+import de.yalama.fileencrypter.Exceptions.InsecureExtractionException;
+import de.yalama.fileencrypter.Exceptions.KeyPairNotFoundException;
+import de.yalama.fileencrypter.FileHandler.FileHandler;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
 import java.util.List;
 
-@RestController
-@RequestMapping("/encrypt")
+
 @RequiredArgsConstructor
-@Slf4j
-public class EncryptionController {
+@Service
+public class EncryptionService {
 
     /**
      * Prototype, this isnt the final way to do things but
@@ -90,7 +79,7 @@ public class EncryptionController {
                 .body(new ByteArrayResource(content));
     }*/
 
-    public void getFile(String fileName, String fileExtension) {
+    /*public void getFile(String fileName, String fileExtension) {
         try {
             InputStream is = new FileInputStream(String.format("%s.%s", fileName, fileExtension));
             //TODO eine HttpServletResponse
@@ -99,5 +88,5 @@ public class EncryptionController {
         } catch (IOException e) {
             log.info(e.getMessage());
         }
-    }
+    }*/
 }

@@ -1,6 +1,6 @@
-package de.yalama.fileencrypter.Encrypter.Content;
+package de.yalama.fileencrypter.Crypto.Data.Model;
 
-import de.yalama.fileencrypter.Encrypter.Key.Key;
+import de.yalama.fileencrypter.Crypto.Key.Key;
 import de.yalama.fileencrypter.Util.CryptoUtil;
 import lombok.Getter;
 import lombok.Setter;
