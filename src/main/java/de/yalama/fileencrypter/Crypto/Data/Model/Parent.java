@@ -2,7 +2,7 @@ package de.yalama.fileencrypter.Crypto.Data.Model;
 
 import de.yalama.fileencrypter.Exceptions.InsecureExtractionException;
 import de.yalama.fileencrypter.Exceptions.KeyPairNotFoundException;
-import de.yalama.fileencrypter.Crypto.Key.Key;
+import de.yalama.fileencrypter.Crypto.Key.Model.Key;
 import de.yalama.fileencrypter.Util.Base64Util;
 import de.yalama.fileencrypter.Util.FileUtil;
 import lombok.Getter;

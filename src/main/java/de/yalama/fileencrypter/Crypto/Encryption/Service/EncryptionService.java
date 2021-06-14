@@ -4,6 +4,7 @@ import de.yalama.fileencrypter.Crypto.Data.Model.Parent;
 import de.yalama.fileencrypter.Exceptions.InsecureExtractionException;
 import de.yalama.fileencrypter.Exceptions.KeyPairNotFoundException;
 import de.yalama.fileencrypter.FileHandler.FileHandler;
+import de.yalama.fileencrypter.Util.FileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -54,7 +55,7 @@ public class EncryptionService {
         p.encryptFileAndStore(file, partLength);
         p.extractAll("map", "encrypted.file");
         String[] filePaths = new String[] {"map.map", "encrypted.file"};
-        return FileHandler.wrapFiles(filePaths);
+        return FileUtil.wrapFiles(filePaths);
     }
 
     //TODO - this has to trigger download!

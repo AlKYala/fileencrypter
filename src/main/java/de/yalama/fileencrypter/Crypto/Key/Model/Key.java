@@ -1,4 +1,4 @@
-package de.yalama.fileencrypter.Crypto.Key;
+package de.yalama.fileencrypter.Crypto.Key.Model;
 
 import de.yalama.fileencrypter.Util.ByteUtil;
 import lombok.NoArgsConstructor;

@@ -16,8 +16,6 @@ import java.security.NoSuchAlgorithmException;
 @Service
 public class DecryptionService {
 
-    //TODO schnittstelle nach außen
-
     private File decryptFiles(String mapFilePath, String contentFilePath) throws NoSuchAlgorithmException, IOException, ClassNotFoundException, BadPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, NoSuchPaddingException, InvalidKeyException {
         Parent p = new Parent();
         p.setFileExtension(FileUtil.getExtensionFromFullFileName(contentFilePath));
@@ -25,4 +23,6 @@ public class DecryptionService {
         p.decryptAndWriteToFile(contentFilePath);
         return new File(String.format("%s.%s", contentFilePath, p.getFileExtension()));
     }
+
+    //TODO decrypt und Files ausgeben
 }
