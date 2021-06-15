@@ -2,6 +2,7 @@ package de.yalama.fileencrypter.Crypto.Encryption.Controller;
 
 import de.yalama.fileencrypter.Crypto.Data.Model.Parent;
 import de.yalama.fileencrypter.Crypto.Encryption.Service.EncryptionService;
+import de.yalama.fileencrypter.Exceptions.FileNameException;
 import de.yalama.fileencrypter.Exceptions.InsecureExtractionException;
 import de.yalama.fileencrypter.Exceptions.KeyPairNotFoundException;
 import de.yalama.fileencrypter.Util.FileUtil;
@@ -19,6 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.File;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
@@ -26,6 +30,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
+import java.util.zip.ZipOutputStream;
 
 @RestController
 @RequestMapping("/encrypt")
@@ -46,10 +51,15 @@ public class EncryptionController {
      */
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public List<ResponseEntity<Resource>> downloadAndEncrypt(@RequestParam MultipartFile file) throws NoSuchAlgorithmException, IOException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, ClassNotFoundException, InsecureExtractionException, KeyPairNotFoundException {
+    public void downloadAndEncrypt(@RequestParam MultipartFile file) throws NoSuchAlgorithmException, IOException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, ClassNotFoundException, InsecureExtractionException, KeyPairNotFoundException, FileNameException {
         this.encryptionService.encrypt(file);
         //TODO now the files are saved on the disk - upload them to client or find better way
-        return null;
+        //hardcoded for testing purposes
+        String[][] fileNames = new String[][] {new String[] {"parent", "file"}, new String[] {"map", "map"}};
+        ZipOutputStream zipOutputStream = FileUtil.getZipOutputStreamForMultipleFiles(fileNames, "encrypted");
+        zipOutputStream.finish();
+        zipOutputStream.close();
+        //files are now zipped encrypted.zip - and application type for zip can now be used
     }
 
     //TODO - this has to trigger download!

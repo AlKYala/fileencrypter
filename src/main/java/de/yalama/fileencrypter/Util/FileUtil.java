@@ -102,14 +102,16 @@ public class FileUtil {
         return file.getBytes();
     }
 
-    public static ZipOutputStream getZipOutputStreamForMultipleFiles(String[][] fileNames, HttpServletResponse response) throws IOException, FileNameException {
-        ZipOutputStream zos = new ZipOutputStream(response.getOutputStream());
+    public static ZipOutputStream getZipOutputStreamForMultipleFiles(String[][] fileNames, String targetZipFilename) throws IOException, FileNameException {
+        FileOutputStream fos = new FileOutputStream(String.format("%s.zip", targetZipFilename));
+        ZipOutputStream zos = new ZipOutputStream(fos);
         for(int i = 0; i < fileNames.length; i++) {
             if(!FileUtil.checkIsFileNameIntact(fileNames[i])) {
                 throw new FileNameException("Filename not complete - check data for missing information");
             }
             zos.putNextEntry(FileUtil.fileToZipEntry(fileNames[i][0], fileNames[i][1]));
         }
+        zos.closeEntry();
         return zos;
     }
 
@@ -117,8 +119,9 @@ public class FileUtil {
         return fileNameWithExtension != null && fileNameWithExtension.length == 2;
     }
 
-    public static ZipOutputStream getZipOutputStreamForMultipleFiles(String[] fileNames, HttpServletResponse response) throws IOException {
-        ZipOutputStream zos = new ZipOutputStream(response.getOutputStream());
+    public static ZipOutputStream getZipOutputStreamForMultipleFiles(String[] fileNames, String targetZipFilename) throws IOException {
+        FileOutputStream fos = new FileOutputStream(String.format("%s.zip", targetZipFilename));
+        ZipOutputStream zos = new ZipOutputStream(fos);
         for(int i = 0; i < fileNames.length; i++) {
             zos.putNextEntry(FileUtil.fileToZipEntry(fileNames[i]));
         }
