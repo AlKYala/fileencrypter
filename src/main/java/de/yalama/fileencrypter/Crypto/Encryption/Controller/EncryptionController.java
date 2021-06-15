@@ -6,6 +6,7 @@ import de.yalama.fileencrypter.Exceptions.InsecureExtractionException;
 import de.yalama.fileencrypter.Exceptions.KeyPairNotFoundException;
 import de.yalama.fileencrypter.Util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -51,14 +52,6 @@ public class EncryptionController {
         return null;
     }
 
-    /**
-     * trigger upload so client downloads files
-     * @param toUpload the array of files to download (usually 2)
-     */
-    public void triggerUpload(File[] toUpload) {
-
-    }
-
     //TODO - this has to trigger download!
     /*private List<ResponseEntity<Resource>> encryptFile(byte[] fileInByteArr, double partLength, String fileName) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, ClassNotFoundException, IOException, BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException {
         String[] names = fileName.split("[.]");
@@ -92,3 +85,5 @@ public class EncryptionController {
         }
     }*/
 }
+
+//TODO in later versions - if multiple files are uploaded zip them together first then encrypt the zip

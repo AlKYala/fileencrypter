@@ -1,10 +1,16 @@
 package de.yalama.fileencrypter.Util;
 
+import de.yalama.fileencrypter.Exceptions.FileNameException;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class FileUtil {
 
@@ -94,5 +100,44 @@ public class FileUtil {
 
     public static byte[] multipartFileToByteArr(MultipartFile file) throws IOException {
         return file.getBytes();
+    }
+
+    public static ZipOutputStream getZipOutputStreamForMultipleFiles(String[][] fileNames, HttpServletResponse response) throws IOException, FileNameException {
+        ZipOutputStream zos = new ZipOutputStream(response.getOutputStream());
+        for(int i = 0; i < fileNames.length; i++) {
+            if(!FileUtil.checkIsFileNameIntact(fileNames[i])) {
+                throw new FileNameException("Filename not complete - check data for missing information");
+            }
+            zos.putNextEntry(FileUtil.fileToZipEntry(fileNames[i][0], fileNames[i][1]));
+        }
+        return zos;
+    }
+
+    private static boolean checkIsFileNameIntact(String[] fileNameWithExtension) {
+        return fileNameWithExtension != null && fileNameWithExtension.length == 2;
+    }
+
+    public static ZipOutputStream getZipOutputStreamForMultipleFiles(String[] fileNames, HttpServletResponse response) throws IOException {
+        ZipOutputStream zos = new ZipOutputStream(response.getOutputStream());
+        for(int i = 0; i < fileNames.length; i++) {
+            zos.putNextEntry(FileUtil.fileToZipEntry(fileNames[i]));
+        }
+        return zos;
+    }
+
+    public static ZipEntry fileToZipEntry(String fileName, String fileExtension) {
+        return new ZipEntry(FileUtil.fileToFSR(fileName, fileExtension).getFilename());
+    }
+
+    public static ZipEntry fileToZipEntry(String fileName) {
+        return new ZipEntry(FileUtil.fileToFSR(fileName).getFilename());
+    }
+
+    private static FileSystemResource fileToFSR(String fileName, String fileExtension) {
+        return FileUtil.fileToFSR(String.format("%s.%s"));
+    }
+
+    private static FileSystemResource fileToFSR(String fileName) {
+        return new FileSystemResource(fileName);
     }
 }
