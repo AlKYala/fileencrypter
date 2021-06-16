@@ -1,9 +1,8 @@
 package de.yalama.fileencrypter;
 
-import de.yalama.fileencrypter.Encrypter.Exceptions.InsecureExtractionException;
-import de.yalama.fileencrypter.Encrypter.Exceptions.KeyLockedException;
-import de.yalama.fileencrypter.Encrypter.Exceptions.KeyPairNotFoundException;
-import de.yalama.fileencrypter.Encrypter.Content.Parent;
+import de.yalama.fileencrypter.Exceptions.InsecureExtractionException;
+import de.yalama.fileencrypter.Exceptions.KeyPairNotFoundException;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javax.crypto.BadPaddingException;
@@ -19,12 +18,12 @@ import java.security.spec.InvalidKeySpecException;
 public class FileencrypterApplication {
 
     //just testing here
-    public static void main(String[] args) throws NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, KeyPairNotFoundException, IOException, InsecureExtractionException, ClassNotFoundException, InvalidKeySpecException, InvalidAlgorithmParameterException, KeyLockedException {
-        //SpringApplication.run(FileencrypterApplication.class, args);
-        Parent p = new Parent();
+    public static void main(String[] args) throws NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, KeyPairNotFoundException, IOException, InsecureExtractionException, ClassNotFoundException, InvalidKeySpecException, InvalidAlgorithmParameterException {
+        SpringApplication.run(FileencrypterApplication.class, args);
+        /*Parent p = new Parent();
         p.encryptFileAndStore("jjwt-0.9.1.jar", 500000);
         p.extractAll("map", "testObject");
         p.loadKeyMap("map.map");
-        p.decryptAndWriteToFile("test");
+        p.decryptAndWriteToFile("test");*/
     }
 }

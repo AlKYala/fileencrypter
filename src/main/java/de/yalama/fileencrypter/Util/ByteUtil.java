@@ -6,7 +6,7 @@ import java.io.*;
 
 public class ByteUtil {
     //https://stackoverflow.com/questions/10730929/cast-an-object-to-bytearray
-    public static byte[]  secretKeyToByteArr(SecretKey key) throws IOException {
+    public static byte[] secretKeyToByteArr(SecretKey key) throws IOException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(bytes);
         objectOutputStream.writeObject(key);

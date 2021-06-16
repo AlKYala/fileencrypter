@@ -1,7 +1,6 @@
-package de.yalama.fileencrypter.Encrypter.Content;
+package de.yalama.fileencrypter.Crypto.Data.Model;
 
-import de.yalama.fileencrypter.Encrypter.Exceptions.KeyLockedException;
-import de.yalama.fileencrypter.Encrypter.Key.Key;
+import de.yalama.fileencrypter.Crypto.Key.Model.Key;
 import de.yalama.fileencrypter.Util.CryptoUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,28 +36,24 @@ public class Child implements Serializable {
                 this.hashCode() + this.key.hashCode(), toEncrypt);
     }
 
-    public void encryptAndStore(String toEncrypt) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException, IOException, ClassNotFoundException, KeyLockedException {
+    public void encryptAndStore(String toEncrypt) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException, IOException, ClassNotFoundException {
         IvParameterSpec spec = CryptoUtil.generateInitializationVector();
         SecretKey sKey = CryptoUtil.generateKey(toEncrypt, this.generateRandomSalt(toEncrypt));
         this.key.setData(sKey, spec);
         this.encryptContent(toEncrypt, "AES/CBC/PKCS5Padding");
     }
 
-    private void encryptContent(String toEncrypt, String algorithm) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, IOException, ClassNotFoundException, KeyLockedException {
+    private void encryptContent(String toEncrypt, String algorithm) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, IOException, ClassNotFoundException {
         Cipher cipher = Cipher.getInstance(algorithm);
         cipher.init(Cipher.ENCRYPT_MODE, this.key.getSecretKey(), this.key.getIvParameterSpec());
         this.encryptedPart = Base64.getEncoder().encodeToString(cipher.doFinal(toEncrypt.getBytes()));
     }
 
-    private int getRandomLengthForKey(int length) {
-        return (int) Math.random() * length;
-    }
-
-    public void clearKeyObject() {
+    public void clearKey() {
         this.key = null;
     }
 
-    public String decrypt() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IOException, ClassNotFoundException, KeyLockedException {
+    public String decrypt() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IOException, ClassNotFoundException {
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, this.key.getSecretKey(), this.key.getIvParameterSpec());
         return new String(cipher.doFinal(Base64.getDecoder().decode(this.encryptedPart)));

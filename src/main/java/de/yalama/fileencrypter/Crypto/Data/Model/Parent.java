@@ -1,9 +1,9 @@
-package de.yalama.fileencrypter.Encrypter.Content;
+package de.yalama.fileencrypter.Crypto.Data.Model;
 
-import de.yalama.fileencrypter.Encrypter.Exceptions.InsecureExtractionException;
-import de.yalama.fileencrypter.Encrypter.Exceptions.KeyLockedException;
-import de.yalama.fileencrypter.Encrypter.Exceptions.KeyPairNotFoundException;
-import de.yalama.fileencrypter.Encrypter.Key.Key;
+import de.yalama.fileencrypter.Exceptions.InsecureExtractionException;
+import de.yalama.fileencrypter.Exceptions.KeyPairNotFoundException;
+import de.yalama.fileencrypter.Crypto.Key.Model.Key;
+import de.yalama.fileencrypter.Util.Base64Util;
 import de.yalama.fileencrypter.Util.FileUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +28,7 @@ public class Parent implements Serializable {
     private List<Child> children;
     //private FileHandler fileHandler;
     private String fileExtension;
+    private String fileName;
 
     public Parent() throws NoSuchAlgorithmException {
         this.children = new ArrayList<Child>();
@@ -40,7 +41,7 @@ public class Parent implements Serializable {
         return (Parent) objectInputStream.readObject();
     }
 
-    public void encryptAndStoreValue(String value, double partLength) throws NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, InvalidKeyException, IllegalBlockSizeException, InvalidKeySpecException, InvalidAlgorithmParameterException, IOException, ClassNotFoundException, KeyLockedException {
+    public void encryptAndStoreValue(String value, double partLength) throws NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, InvalidKeyException, IllegalBlockSizeException, InvalidKeySpecException, InvalidAlgorithmParameterException, IOException, ClassNotFoundException {
         Child child = new Child();
         int sum = 0;
         while(sum < value.length()) {
@@ -56,16 +57,17 @@ public class Parent implements Serializable {
         }
     }
 
-    public void encryptAndStoreValue(String value) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException, InvalidAlgorithmParameterException, IOException, ClassNotFoundException, KeyLockedException {
+    public void encryptAndStoreValue(String value) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException, InvalidAlgorithmParameterException, IOException, ClassNotFoundException {
         this.encryptAndStoreValue(value, 5000d);
     }
 
-    public void encryptFileAndStore(String path, double partLength) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, ClassNotFoundException, KeyLockedException {
-        this.fileExtension = FileUtil.getExtensionFromFullFileName(path);
-        this.encryptFileAndStore(new File(path), partLength);
+    public void encryptBase64AndStore(String base64, String fileName, String fileExtension, double partLength) throws IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException, BadPaddingException, InvalidKeySpecException, IllegalBlockSizeException, ClassNotFoundException {
+        this.encryptAndStoreValue(base64, partLength);
+        this.fileExtension = fileExtension;
+        this.fileName = fileName;
     }
 
-    public void encryptFileAndStore(File file, double partLength) throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException, ClassNotFoundException, InvalidAlgorithmParameterException, InvalidKeySpecException, IOException, KeyLockedException {
+    public void encryptFileAndStore(File file, double partLength) throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException, ClassNotFoundException, InvalidAlgorithmParameterException, InvalidKeySpecException, IOException {
         String fileAsBase64 = FileUtil.fileToBase64String(file);
         this.fileExtension = FileUtil.getExtensionFromFullFileName(file);
         this.encryptAndStoreValue(fileAsBase64, partLength);
@@ -123,7 +125,7 @@ public class Parent implements Serializable {
      * @return a Map<Integer, KeyMap> objected implemented in HashMap, see description.
      * @throws KeyPairNotFoundException thrown when a child object with no keyPair is found - which only happens if a child object keyMap is cleared
      */
-    private Map<Integer, Key> getKeyPairOfChildren() throws KeyPairNotFoundException {
+    private Map<Integer, Key> getKeyPairsOfChildren() throws KeyPairNotFoundException {
         Map<Integer, Key> keyPairMap = new HashMap<Integer, Key>();
         for(int i = 0; i < children.size(); i++) {
             if(children.get(i).getKey() == null) {
@@ -136,7 +138,7 @@ public class Parent implements Serializable {
 
     private void clearKeyPairsOfChildren() {
         for(Child c: children) {
-            c.clearKeyObject();
+            c.clearKey();
         }
     }
 
@@ -147,11 +149,11 @@ public class Parent implements Serializable {
      * @throws KeyPairNotFoundException
      */
     private void extractKeyMap(String fileName) throws IOException, KeyPairNotFoundException {
-        FileUtil.anyObjectToFile(this.getKeyPairOfChildren(), fileName, "map");
+        FileUtil.anyObjectToFile(this.getKeyPairsOfChildren(), fileName, "map");
     }
 
-    public void loadKeyMap(String filenameWithExtension) throws IOException, ClassNotFoundException {
-        File keyMapFile = new File(filenameWithExtension);
+    public void loadKeyMap(String mapFilePath) throws IOException, ClassNotFoundException {
+        File keyMapFile = new File(mapFilePath);
         this.loadKeyMapData(keyMapFile);
     }
 
@@ -172,7 +174,15 @@ public class Parent implements Serializable {
         }
     }
 
-    public String decryptAndGetBase64() throws BadPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, IllegalBlockSizeException, ClassNotFoundException, NoSuchPaddingException, InvalidKeyException, IOException, KeyLockedException {
+    public String getBase64() {
+        StringBuilder sb = new StringBuilder();
+        for(Child c : this.children) {
+            sb.append(c.getEncryptedPart());
+        }
+        return sb.toString();
+    }
+
+    public String decryptAndGetBase64() throws BadPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, IllegalBlockSizeException, ClassNotFoundException, NoSuchPaddingException, InvalidKeyException, IOException {
         StringBuilder sb = new StringBuilder();
         for(Child c : this.children) {
             sb.append(c.decrypt());
@@ -180,12 +190,12 @@ public class Parent implements Serializable {
         return sb.toString();
     }
 
-    public void decryptAndWriteToFile(String fileName) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, IOException, NoSuchPaddingException, InvalidAlgorithmParameterException, ClassNotFoundException, KeyLockedException {
+    public void decryptAndWriteToFile(String fileName) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, IOException, NoSuchPaddingException, InvalidAlgorithmParameterException, ClassNotFoundException {
         if(fileExtension.equals(".txt")) {
             FileUtil.writeFilePlainText(this.decryptAndGetBase64(), fileName, this.fileExtension);
             return;
         }
-        FileUtil.base64StringToFile(this.decryptAndGetBase64(), fileName, this.fileExtension);
+        Base64Util.base64StringToFile(this.decryptAndGetBase64(), fileName, this.fileExtension);
     }
 }
 
