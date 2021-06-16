@@ -6,6 +6,8 @@ import de.yalama.fileencrypter.Exceptions.FileNameException;
 import de.yalama.fileencrypter.Exceptions.InsecureExtractionException;
 import de.yalama.fileencrypter.Exceptions.KeyPairNotFoundException;
 import de.yalama.fileencrypter.Util.FileUtil;
+import de.yalama.fileencrypter.Util.ZipUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -34,14 +36,11 @@ import java.util.zip.ZipOutputStream;
 
 @RestController
 @RequestMapping("/encrypt")
+@RequiredArgsConstructor
 public class EncryptionController {
 
-    private EncryptionService encryptionService;
-
     @Autowired
-    public EncryptionController(EncryptionService encryptionService) {
-        this.encryptionService = encryptionService;
-    }
+    private EncryptionService encryptionService;
 
     /**
      * Prototype, this isnt the final way to do things but
@@ -56,7 +55,7 @@ public class EncryptionController {
         //TODO now the files are saved on the disk - upload them to client or find better way
         //hardcoded for testing purposes
         String[][] fileNames = new String[][] {new String[] {"parent", "file"}, new String[] {"map", "map"}};
-        FileUtil.zipMultipleFilesAndGenerateFile(fileNames, "encrypted");
+        ZipUtil.zipMultipleFilesAndGenerateFile(fileNames, "encrypted");
         //files are now zipped encrypted.zip - and application type for zip can now be used
     }
 
