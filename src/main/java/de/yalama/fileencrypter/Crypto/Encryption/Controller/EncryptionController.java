@@ -56,9 +56,7 @@ public class EncryptionController {
         //TODO now the files are saved on the disk - upload them to client or find better way
         //hardcoded for testing purposes
         String[][] fileNames = new String[][] {new String[] {"parent", "file"}, new String[] {"map", "map"}};
-        ZipOutputStream zipOutputStream = FileUtil.getZipOutputStreamForMultipleFiles(fileNames, "encrypted");
-        zipOutputStream.finish();
-        zipOutputStream.close();
+        FileUtil.zipMultipleFilesAndGenerateFile(fileNames, "encrypted");
         //files are now zipped encrypted.zip - and application type for zip can now be used
     }
 

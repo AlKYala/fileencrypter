@@ -102,6 +102,12 @@ public class FileUtil {
         return file.getBytes();
     }
 
+    public static void zipMultipleFilesAndGenerateFile(String[][] fileNames, String targetZipFilename) throws IOException, FileNameException {
+        ZipOutputStream zipOutputStream = getZipOutputStreamForMultipleFiles(fileNames, targetZipFilename);
+        zipOutputStream.flush();
+        zipOutputStream.close();
+    }
+
     public static ZipOutputStream getZipOutputStreamForMultipleFiles(String[][] fileNames, String targetZipFilename) throws IOException, FileNameException {
         FileOutputStream fos = new FileOutputStream(String.format("%s.zip", targetZipFilename));
         ZipOutputStream zos = new ZipOutputStream(fos);
@@ -137,7 +143,7 @@ public class FileUtil {
     }
 
     private static FileSystemResource fileToFSR(String fileName, String fileExtension) {
-        return FileUtil.fileToFSR(String.format("%s.%s"));
+        return FileUtil.fileToFSR(String.format("%s.%s", fileName, fileExtension));
     }
 
     private static FileSystemResource fileToFSR(String fileName) {
