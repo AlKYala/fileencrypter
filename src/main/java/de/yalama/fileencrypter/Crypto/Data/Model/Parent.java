@@ -174,6 +174,11 @@ public class Parent implements Serializable {
         }
     }
 
+    /**
+     * Assembles the Encrypted parts of the children and returns the file
+     * as encrypted
+     * @return The completely assembled encrypted part
+     */
     public String getBase64() {
         StringBuilder sb = new StringBuilder();
         for(Child c : this.children) {

@@ -1,4 +1,4 @@
-package de.yalama.fileencrypter.Websecurity;
+package de.yalama.fileencrypter.Web.Websecurity;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

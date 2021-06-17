@@ -14,5 +14,5 @@ public class DecryptionController {
     @Autowired
     private DecryptionService decryptionService;
 
-
+    //TODO two ways of input - with the zip or with two files
 }

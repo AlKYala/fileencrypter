@@ -58,6 +58,14 @@ public class EncryptionService {
         p.encryptBase64AndStore(base64, fileName, fileExtension, partLength);
         p.extractAll("map", "encrypted.file");
     }
+
+    public String[][] encryptAndGetBase64Values(String base64, String fileName, String fileExentsion, double partLength) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, ClassNotFoundException, IOException, BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException {
+        Parent p = new Parent();
+        p.encryptBase64AndStore(base64, fileName, fileExentsion, partLength);
+        String[][] data = new String[2][3];
+        String base64Encrypted = p.getBase64();
+        //TODO
+    }
 }
 
 /**

@@ -1,6 +1,7 @@
 package de.yalama.fileencrypter.Util;
 
 import de.yalama.fileencrypter.Exceptions.FileNameException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+@Slf4j
 public class FileUtil {
 
     public static byte[] fileToByteArr(File file) {
@@ -108,5 +110,18 @@ public class FileUtil {
 
     static FileSystemResource fileToFSR(String fileName) {
         return new FileSystemResource(fileName);
+    }
+
+    public static File loadFile(String fileName) {
+        return new File(fileName);
+    }
+
+    public static void deleteFile(String fileName) {
+        if(FileUtil.loadFile(fileName).delete()) {
+            log.info(String.format("File %s deleted successfully", fileName));
+        }
+        else {
+            log.error(String.format("File %s not deleted", fileName));
+        }
     }
 }
