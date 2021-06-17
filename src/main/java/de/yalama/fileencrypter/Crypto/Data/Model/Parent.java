@@ -127,9 +127,13 @@ public class Parent implements Serializable {
      * @throws KeyPairNotFoundException
      * @throws IOException
      */
-    public String getKeyPairsOfChildrenAsBase64() throws KeyPairNotFoundException, IOException {
+    public String getKeyPairsOfChildrenAsBase64() throws KeyPairNotFoundException, IOException, InsecureExtractionException {
         Map<Integer, Key> keyPairs = this.getKeyPairsOfChildren();
         byte[] keyPairsAsByteArr = ByteUtil.keyMapToByteArr(keyPairs);
+        this.clearKeyPairsOfChildren();
+        if(!this.checkChildrenAllClear()) {
+            throw new InsecureExtractionException("Keypairs of children must be deleted first");
+        }
         return Base64.getEncoder().encodeToString(keyPairsAsByteArr);
     }
 
