@@ -4,6 +4,7 @@ import de.yalama.fileencrypter.Exceptions.InsecureExtractionException;
 import de.yalama.fileencrypter.Exceptions.KeyPairNotFoundException;
 import de.yalama.fileencrypter.Crypto.Key.Model.Key;
 import de.yalama.fileencrypter.Util.Base64Util;
+import de.yalama.fileencrypter.Util.ByteUtil;
 import de.yalama.fileencrypter.Util.FileUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -121,6 +122,22 @@ public class Parent implements Serializable {
     }
 
     /**
+     * Returns the keyPairs of the children as Base64
+     * @return the keyPairs of the children encoded in Base64: Map<Integer, Key> -> byte[] -> String
+     * @throws KeyPairNotFoundException
+     * @throws IOException
+     */
+    public String getKeyPairsOfChildrenAsBase64() throws KeyPairNotFoundException, IOException, InsecureExtractionException {
+        Map<Integer, Key> keyPairs = this.getKeyPairsOfChildren();
+        byte[] keyPairsAsByteArr = ByteUtil.keyMapToByteArr(keyPairs);
+        this.clearKeyPairsOfChildren();
+        if(!this.checkChildrenAllClear()) {
+            throw new InsecureExtractionException("Keypairs of children must be deleted first");
+        }
+        return Base64.getEncoder().encodeToString(keyPairsAsByteArr);
+    }
+
+    /**
      * Creates a map where keyPair Objects are indexed by what Index the corresponding child object is saved in Parent::children
      * @return a Map<Integer, KeyMap> objected implemented in HashMap, see description.
      * @throws KeyPairNotFoundException thrown when a child object with no keyPair is found - which only happens if a child object keyMap is cleared
@@ -174,6 +191,11 @@ public class Parent implements Serializable {
         }
     }
 
+    /**
+     * Assembles the Encrypted parts of the children and returns the file
+     * as encrypted
+     * @return The completely assembled encrypted part
+     */
     public String getBase64() {
         StringBuilder sb = new StringBuilder();
         for(Child c : this.children) {

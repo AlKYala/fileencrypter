@@ -24,17 +24,18 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Base64;
 import java.util.List;
 
 
 @Service
 public class EncryptionService {
 
-    public void encrypt(MultipartFile file) throws IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException, BadPaddingException, InsecureExtractionException, KeyPairNotFoundException, InvalidKeySpecException, IllegalBlockSizeException, ClassNotFoundException {
+    public String[][] encrypt(MultipartFile file) throws IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException, BadPaddingException, InsecureExtractionException, KeyPairNotFoundException, InvalidKeySpecException, IllegalBlockSizeException, ClassNotFoundException {
         String[] names = FileUtil.getFileNameAndExtensionFromFullFileName(file.getOriginalFilename());
         //debug
         System.out.printf("%s \n%s\n", names[0], names[1]);
-        this.encrypt(file.getBytes(), names[0], names[1], 5000000d);
+        return this.encryptAndGetBase64Values(Base64.getEncoder().encodeToString(file.getBytes()), names[0], names[1], 5000000d);
     }
 
     /**
@@ -57,6 +58,13 @@ public class EncryptionService {
         Parent p = new Parent();
         p.encryptBase64AndStore(base64, fileName, fileExtension, partLength);
         p.extractAll("map", "encrypted.file");
+    }
+
+    public String[][] encryptAndGetBase64Values(String base64, String fileName, String fileExtension, double partLength) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, ClassNotFoundException, IOException, BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException, KeyPairNotFoundException, InsecureExtractionException {
+        Parent p = new Parent();
+        p.encryptBase64AndStore(base64, fileName, fileExtension, partLength);
+        return new String[][] {{p.getBase64(), fileName, fileExtension},
+                {p.getKeyPairsOfChildrenAsBase64(), "map", "map"}};
     }
 }
 

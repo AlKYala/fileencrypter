@@ -1,6 +1,7 @@
 package de.yalama.fileencrypter.Util;
 
 import de.yalama.fileencrypter.Exceptions.FileNameException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+@Slf4j
 public class FileUtil {
 
     public static byte[] fileToByteArr(File file) {
@@ -102,51 +104,24 @@ public class FileUtil {
         return file.getBytes();
     }
 
-    public static void zipMultipleFilesAndGenerateFile(String[][] fileNames, String targetZipFilename) throws IOException, FileNameException {
-        ZipOutputStream zipOutputStream = getZipOutputStreamForMultipleFiles(fileNames, targetZipFilename);
-        zipOutputStream.flush();
-        zipOutputStream.close();
-    }
-
-    public static ZipOutputStream getZipOutputStreamForMultipleFiles(String[][] fileNames, String targetZipFilename) throws IOException, FileNameException {
-        FileOutputStream fos = new FileOutputStream(String.format("%s.zip", targetZipFilename));
-        ZipOutputStream zos = new ZipOutputStream(fos);
-        for(int i = 0; i < fileNames.length; i++) {
-            if(!FileUtil.checkIsFileNameIntact(fileNames[i])) {
-                throw new FileNameException("Filename not complete - check data for missing information");
-            }
-            zos.putNextEntry(FileUtil.fileToZipEntry(fileNames[i][0], fileNames[i][1]));
-        }
-        zos.closeEntry();
-        return zos;
-    }
-
-    private static boolean checkIsFileNameIntact(String[] fileNameWithExtension) {
-        return fileNameWithExtension != null && fileNameWithExtension.length == 2;
-    }
-
-    public static ZipOutputStream getZipOutputStreamForMultipleFiles(String[] fileNames, String targetZipFilename) throws IOException {
-        FileOutputStream fos = new FileOutputStream(String.format("%s.zip", targetZipFilename));
-        ZipOutputStream zos = new ZipOutputStream(fos);
-        for(int i = 0; i < fileNames.length; i++) {
-            zos.putNextEntry(FileUtil.fileToZipEntry(fileNames[i]));
-        }
-        return zos;
-    }
-
-    public static ZipEntry fileToZipEntry(String fileName, String fileExtension) {
-        return new ZipEntry(FileUtil.fileToFSR(fileName, fileExtension).getFilename());
-    }
-
-    public static ZipEntry fileToZipEntry(String fileName) {
-        return new ZipEntry(FileUtil.fileToFSR(fileName).getFilename());
-    }
-
-    private static FileSystemResource fileToFSR(String fileName, String fileExtension) {
+    static FileSystemResource fileToFSR(String fileName, String fileExtension) {
         return FileUtil.fileToFSR(String.format("%s.%s", fileName, fileExtension));
     }
 
-    private static FileSystemResource fileToFSR(String fileName) {
+    static FileSystemResource fileToFSR(String fileName) {
         return new FileSystemResource(fileName);
+    }
+
+    public static File loadFile(String fileName) {
+        return new File(fileName);
+    }
+
+    public static void deleteFile(String fileName) {
+        if(FileUtil.loadFile(fileName).delete()) {
+            log.info(String.format("File %s deleted successfully", fileName));
+        }
+        else {
+            log.error(String.format("File %s not deleted", fileName));
+        }
     }
 }
