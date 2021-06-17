@@ -4,6 +4,7 @@ import de.yalama.fileencrypter.Exceptions.InsecureExtractionException;
 import de.yalama.fileencrypter.Exceptions.KeyPairNotFoundException;
 import de.yalama.fileencrypter.Crypto.Key.Model.Key;
 import de.yalama.fileencrypter.Util.Base64Util;
+import de.yalama.fileencrypter.Util.ByteUtil;
 import de.yalama.fileencrypter.Util.FileUtil;
 import lombok.Getter;
 import lombok.Setter;
@@ -118,6 +119,18 @@ public class Parent implements Serializable {
             }
         }
         return true;
+    }
+
+    /**
+     * Returns the keyPairs of the children as Base64
+     * @return the keyPairs of the children encoded in Base64: Map<Integer, Key> -> byte[] -> String
+     * @throws KeyPairNotFoundException
+     * @throws IOException
+     */
+    public String getKeyPairsOfChildrenAsBase64() throws KeyPairNotFoundException, IOException {
+        Map<Integer, Key> keyPairs = this.getKeyPairsOfChildren();
+        byte[] keyPairsAsByteArr = ByteUtil.keyMapToByteArr(keyPairs);
+        return Base64.getEncoder().encodeToString(keyPairsAsByteArr);
     }
 
     /**

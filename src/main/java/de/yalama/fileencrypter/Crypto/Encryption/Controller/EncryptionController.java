@@ -46,14 +46,9 @@ public class EncryptionController {
      * @return An array of files (by default of size 2) where the first index holds the key for the file
      * and the second the encrypted content itself
      */
-    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
-            produces = {MediaType.APPLICATION_JSON_VALUE})
-    public String[] downloadAndEncrypt(@RequestParam MultipartFile file) throws NoSuchAlgorithmException, IOException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, ClassNotFoundException, InsecureExtractionException, KeyPairNotFoundException, FileNameException {
-        this.encryptionService.encrypt(file);
-        //TODO just return an Array of Strings -
-        //hardcoded for testing purposes
-        String[][] fileNames = new String[][] {new String[] {"parent", "file"}, new String[] {"map", "map"}};
-        //TODO
+    @PostMapping
+    public String[][] downloadAndEncrypt(@RequestParam MultipartFile file) throws NoSuchAlgorithmException, IOException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, ClassNotFoundException, InsecureExtractionException, KeyPairNotFoundException, FileNameException {
+        return this.encryptionService.encrypt(file);
     }
 }
 
