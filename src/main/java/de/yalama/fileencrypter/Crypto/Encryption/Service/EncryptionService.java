@@ -1,5 +1,6 @@
 package de.yalama.fileencrypter.Crypto.Encryption.Service;
 
+import de.yalama.fileencrypter.Crypto.Data.Model.Base64File;
 import de.yalama.fileencrypter.Crypto.Data.Model.Parent;
 import de.yalama.fileencrypter.Exceptions.InsecureExtractionException;
 import de.yalama.fileencrypter.Exceptions.KeyPairNotFoundException;
@@ -17,7 +18,9 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 @Service
 public class EncryptionService {
@@ -56,6 +59,18 @@ public class EncryptionService {
         p.encryptBase64AndStore(base64, fileName, fileExtension, partLength);
         return new String[][]{{p.getBase64(), fileName, fileExtension},
                 {p.getKeyPairsOfChildrenAsBase64(), "map", "map"}};
+    }
+
+    /**
+     * Same as EncryptionService::encryptAndGetBase64Values but it returns a list of Base64 Objects
+     */
+    public List<Base64File> encryptAndGetBase64ValuesBase64Files(String base64, String fileName, String fileExtension, double partLength) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, KeyPairNotFoundException, ClassNotFoundException, InsecureExtractionException {
+        String[][] data = this.encryptAndGetBase64Values(base64, fileName, fileExtension, partLength);
+        List<Base64File> base64Files = new ArrayList<Base64File>();
+        for(String[] b64Info: data) {
+            base64Files.add(new Base64File(b64Info[0], b64Info[1], b64Info[2]));
+        }
+        return base64Files;
     }
 }
 
