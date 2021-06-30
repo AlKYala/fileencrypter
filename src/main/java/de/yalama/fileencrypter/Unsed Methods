@@ -98,3 +98,36 @@
         Cipher decrypter = CryptoUtil.getRSACipher(Cipher.DECRYPT_MODE, privateKey);
         return new String(decrypter.doFinal(encryptedInput), StandardCharsets.UTF_8);
     }*/
+
+//von Parent
+
+    /*public void encryptFileAndStore(String path, double partLength) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, ClassNotFoundException, KeyLockedException {
+        this.fileExtension = FileUtil.getExtensionFromFullFileName(path);
+        this.encryptFileAndStore(new File(path), partLength);
+    }*/
+
+//von fileHandler
+
+    /*private String fileExtension;
+
+    //TODO input file - via REST call?
+
+    public byte[] fileToByteArr(File file, String fileExtension) {
+        this.fileExtension = fileExtension;
+        return FileUtil.fileToByteArr(file);
+    }
+
+    public void generateFile(byte[] bArr, String fileName, String fileExtension) throws IOException {
+        FileOutputStream fileOutputStream = new FileOutputStream(fileName);
+        try {
+            fileOutputStream = new FileOutputStream(String.format("%s.%s", fileName, fileExtension));
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.write(bArr);
+            objectOutputStream.close();
+            fileOutputStream.close();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }*/

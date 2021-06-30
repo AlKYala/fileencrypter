@@ -1,5 +1,6 @@
 package de.yalama.fileencrypter.Crypto.Encryption.Controller;
 
+import de.yalama.fileencrypter.Crypto.Data.Model.Base64File;
 import de.yalama.fileencrypter.Crypto.Data.Model.Parent;
 import de.yalama.fileencrypter.Crypto.Encryption.Service.EncryptionService;
 import de.yalama.fileencrypter.Exceptions.FileNameException;
@@ -29,6 +30,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipOutputStream;
 
@@ -46,10 +48,22 @@ public class EncryptionController {
      * @return An array of files (by default of size 2) where the first index holds the key for the file
      * and the second the encrypted content itself
      */
-    @PostMapping
-    public String[][] downloadAndEncrypt(@RequestParam MultipartFile file) throws NoSuchAlgorithmException, IOException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, ClassNotFoundException, InsecureExtractionException, KeyPairNotFoundException, FileNameException {
+    @CrossOrigin(origins =  "http://localhost:8080")
+    @PostMapping("/single")
+    public String[][] downloadAndEncrypt(@RequestParam("file") MultipartFile file) throws NoSuchAlgorithmException, IOException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, ClassNotFoundException, InsecureExtractionException, KeyPairNotFoundException, FileNameException {
         return this.encryptionService.encrypt(file);
     }
+
+    @CrossOrigin(origins =  "http://localhost:8080")
+    @PostMapping("/singlebase64")
+    public String[][] downloadAndEncryptBase64(@RequestBody Base64File info) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, KeyPairNotFoundException, ClassNotFoundException, InsecureExtractionException {
+        return encryptionService.encryptAndGetBase64Values(info.getBase64(), info.getFileName(), info.getFileExtension(), 50000d);
+    }
+
+    /*@PostMapping("/multiple")
+    public String[][] downloadAndEncrypt(@RequestParam MultipartFile[] files) {
+        //TODO files zippen
+    }*/
 }
 
 //TODO in later versions - if multiple files are uploaded zip them together first then encrypt the zip

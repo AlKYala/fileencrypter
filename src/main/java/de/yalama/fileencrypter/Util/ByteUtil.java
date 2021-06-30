@@ -6,6 +6,7 @@ import org.apache.commons.io.IOUtils;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import java.io.*;
+import java.util.Base64;
 import java.util.Map;
 
 public class ByteUtil {
@@ -51,5 +52,13 @@ public class ByteUtil {
         ois.close();
         bis.close();
         return ret;
+    }
+
+    public static String byteArrToBase64(byte[] arr) {
+        return Base64.getEncoder().encodeToString(arr);
+    }
+
+    public static byte[] base64ToByteArr(String base64) {
+        return Base64.getDecoder().decode(base64);
     }
 }
