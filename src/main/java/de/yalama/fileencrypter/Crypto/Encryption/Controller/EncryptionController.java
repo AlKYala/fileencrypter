@@ -59,11 +59,6 @@ public class EncryptionController {
     public String[][] downloadAndEncryptBase64(@RequestBody Base64File info) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, KeyPairNotFoundException, ClassNotFoundException, InsecureExtractionException {
         return encryptionService.encryptAndGetBase64Values(info.getBase64(), info.getFileName(), info.getFileExtension(), 50000d);
     }
-
-    /*@PostMapping("/multiple")
-    public String[][] downloadAndEncrypt(@RequestParam MultipartFile[] files) {
-        //TODO files zippen
-    }*/
 }
 
 //TODO in later versions - if multiple files are uploaded zip them together first then encrypt the zip

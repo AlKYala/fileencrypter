@@ -182,10 +182,10 @@ public class Parent implements Serializable {
         FileInputStream fileInputStream = new FileInputStream(keyMapFile);
         ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
         Map<Integer, Key> keyPairMap = (Map<Integer, Key>) objectInputStream.readObject();
-        this.feedValuesToChildren(keyPairMap);
+        this.feedKeysToChildren(keyPairMap);
     }
 
-    private void feedValuesToChildren(Map<Integer, Key> map) {
+    public void feedKeysToChildren(Map<Integer, Key> map) {
         for(Integer index : map.keySet()) {
             this.children.get(index).setKey(map.get(index));
         }
