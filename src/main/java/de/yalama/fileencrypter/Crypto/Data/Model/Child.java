@@ -26,6 +26,7 @@ public class Child implements Serializable {
 
     private String encryptedPart;
     private Key key;
+    private int encryptedLength;
 
     public Child() {
         this.key = new Key();

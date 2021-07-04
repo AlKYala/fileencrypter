@@ -32,10 +32,30 @@ public class DecryptionService {
         byte[] mapByteArr = ByteUtil.base64ToByteArr(extendedBase64File.getKey().getBase64());
         Map<Integer, Key> keyMap = ByteUtil.byteArrToKeyMap(mapByteArr);
 
-        byte[] parentByteArr = ByteUtil.base64ToByteArr(extendedBase64File.getContent().getBase64());
-        Parent p = (Parent) ByteUtil.byteArrToObject(parentByteArr);
+        Parent p = new Parent();
+        p.loadKeyMap(keyMap);
 
-        p.feedKeysToChildren(keyMap);
+        //Jetzt muss der encrypted teil folgen
+
+        /**
+         * TODO: WICHTIGE IDEE:
+         * BEIM NAECHSTEN MAL SPEICHERST DU DEN PARENT SAMT CHILDREN MIT
+         * ABER OHNE DEN ENCRYPTED PART!
+         * ALSO:
+         * 1. Keymap - ok
+         * 2. encrypted String - ok
+         * 3. Parent mit Kindern. Die Kinder haben aber nicht den encrypted teil!
+         * Du musst den Kindern noch ein feld hinzufuegen: Encryption Length
+         */
+
+        /*byte[] parentByteArr = ByteUtil.base64ToByteArr(extendedBase64File.getContent().getBase64());
+        Parent p = (Parent) ByteUtil.byteArrToObject(parentByteArr);*/
+
+        /*
+        Wie muss der Vorgang eigentlich ablaufen? Maps sind schon zugewiesen
+        Jetzt: Weise jedem der Kinder ihr encrypted part zu.
+         */
+
         return new Base64File(p.decryptAndGetBase64(), extendedBase64File.getContent().getFileName(), extendedBase64File.getContent().getFileExtension());
     }
 }

@@ -51,6 +51,7 @@ public class Parent implements Serializable {
 
             String subStringToEncrypt = value.substring(sum, sum+howMuchOfTheValueIsEncrypted);
             child.encryptAndStore(subStringToEncrypt);
+            child.setEncryptedLength(howMuchOfTheValueIsEncrypted);
             this.children.add(child);
             child = new Child();
             sum += howMuchOfTheValueIsEncrypted;
@@ -185,7 +186,15 @@ public class Parent implements Serializable {
         this.feedKeysToChildren(keyPairMap);
     }
 
-    public void feedKeysToChildren(Map<Integer, Key> map) {
+    public void loadKeyMap(Map<Integer, Key> map) {
+        this.children = new ArrayList<Child>(map.size());
+        for(Integer index: map.keySet()) {
+            this.children.add(index, new Child());
+            this.children.get(index).setKey(map.get(index));
+        }
+    }
+
+    private void feedKeysToChildren(Map<Integer, Key> map) {
         for(Integer index : map.keySet()) {
             this.children.get(index).setKey(map.get(index));
         }
