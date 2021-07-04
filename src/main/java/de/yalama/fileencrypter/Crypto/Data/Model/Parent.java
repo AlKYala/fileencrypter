@@ -209,8 +209,43 @@ public class Parent implements Serializable {
         StringBuilder sb = new StringBuilder();
         for(Child c : this.children) {
             sb.append(c.getEncryptedPart());
+            c.setEncryptedPart(""); //safety reason
         }
         return sb.toString();
+    }
+
+    /**
+     * Used before writing the parent to a file - checking if:
+     * -> The children dont have the extracted parts
+     * -> The keys are already deleted
+     * @return
+     */
+    private boolean checkParentCanBeExtracted() {
+        for(Child c: this.children) {
+            if(c.getEncryptedPart() != null && c.getEncryptedPart().length() > 0) {
+                return false;
+            }
+            if(c.getKey() != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void sanitize() {
+        for(Child c: this.children) {
+            c.setKey(null);
+            c.setEncryptedPart("");
+        }
+    }
+
+    public String[] sanitizeAndGetInstanceBase64() throws InsecureExtractionException, IOException {
+        this.sanitize();
+        if(!this.checkParentCanBeExtracted()) {
+            throw new InsecureExtractionException("The parent cannot be extracted before the encrypted parts and keys are removed");
+        }
+        byte[] parentAsByteArr = ByteUtil.anyObjectToByteArr(this);
+        return new String[] {Base64Util.byteArrToBase64(parentAsByteArr), "parent", "parent"};
     }
 
     public String decryptAndGetBase64() throws BadPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, IllegalBlockSizeException, ClassNotFoundException, NoSuchPaddingException, InvalidKeyException, IOException {

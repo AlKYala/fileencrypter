@@ -58,7 +58,7 @@ public class EncryptionService {
         Parent p = new Parent();
         p.encryptBase64AndStore(base64, fileName, fileExtension, partLength);
         return new String[][]{{p.getBase64(), fileName, fileExtension},
-                {p.getKeyPairsOfChildrenAsBase64(), "map", "map"}};
+                {p.getKeyPairsOfChildrenAsBase64(), "map", "map"}, p.sanitizeAndGetInstanceBase64()};
     }
 
     /**
