@@ -55,6 +55,7 @@ public class Parent implements Serializable {
             this.children.add(child);
             child = new Child();
             sum += howMuchOfTheValueIsEncrypted;
+            //debug
             System.out.println(sum);
         }
     }
@@ -212,6 +213,21 @@ public class Parent implements Serializable {
             c.setEncryptedPart(""); //safety reason
         }
         return sb.toString();
+    }
+
+    /**
+     * Used in the decryption process - assigns the encrypted string to children
+     */
+    public void assignBase64ToChildren(String base64) {
+        //TODO hier koennte es schwierigkeiten geben
+        int start = 0;
+        for(Child c: this.children) {
+            String childSubstring = base64.substring(start, start+c.getEncryptedLength());
+            //debug
+            System.out.println(childSubstring);
+            c.setEncryptedPart(childSubstring);
+            start += c.getEncryptedLength();
+        }
     }
 
     /**

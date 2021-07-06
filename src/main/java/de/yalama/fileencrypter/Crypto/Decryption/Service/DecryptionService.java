@@ -1,5 +1,6 @@
 package de.yalama.fileencrypter.Crypto.Decryption.Service;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import de.yalama.fileencrypter.Crypto.Data.Model.Base64File;
 import de.yalama.fileencrypter.Crypto.Data.Model.ExtendedBase64File;
 import de.yalama.fileencrypter.Crypto.Data.Model.Parent;
@@ -32,10 +33,14 @@ public class DecryptionService {
         byte[] mapByteArr = ByteUtil.base64ToByteArr(extendedBase64File.getKey().getBase64());
         Map<Integer, Key> keyMap = ByteUtil.byteArrToKeyMap(mapByteArr);
 
-        Parent p = new Parent();
+        byte[] parentByteArr = ByteUtil.base64ToByteArr(extendedBase64File.getParent().getBase64());
+        Parent p = (Parent) ByteUtil.byteArrToObject(parentByteArr);
+
+        p.assignBase64ToChildren(extendedBase64File.getContent().getBase64());
         p.loadKeyMap(keyMap);
 
-        //Jetzt muss der encrypted teil folgen
+        return new Base64File(p.decryptAndGetBase64(), extendedBase64File.getContent().getFileName(), extendedBase64File.getContent().getFileExtension());
+
 
         /**
          * TODO: WICHTIGE IDEE:
@@ -45,17 +50,8 @@ public class DecryptionService {
          * 1. Keymap - ok
          * 2. encrypted String - ok
          * 3. Parent mit Kindern. Die Kinder haben aber nicht den encrypted teil!
-         * Du musst den Kindern noch ein feld hinzufuegen: Encryption Length
+         * Du musst den Kindern noch ein feld hinzufuegen: Encryption Length ok
+         * 4. zurueckgeben: ok
          */
-
-        /*byte[] parentByteArr = ByteUtil.base64ToByteArr(extendedBase64File.getContent().getBase64());
-        Parent p = (Parent) ByteUtil.byteArrToObject(parentByteArr);*/
-
-        /*
-        Wie muss der Vorgang eigentlich ablaufen? Maps sind schon zugewiesen
-        Jetzt: Weise jedem der Kinder ihr encrypted part zu.
-         */
-
-        return new Base64File(p.decryptAndGetBase64(), extendedBase64File.getContent().getFileName(), extendedBase64File.getContent().getFileExtension());
     }
 }

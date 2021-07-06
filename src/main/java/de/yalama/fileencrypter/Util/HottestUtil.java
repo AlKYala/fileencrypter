@@ -8,6 +8,7 @@ import java.io.*;
 public class HottestUtil {
     public static void loadFileAndEncryptToBase64(String fileName) {
         File file = new File(fileName);
+        //debug
         System.out.println(FileUtil.fileToBase64String(file));
     }
 
