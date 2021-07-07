@@ -2,6 +2,7 @@ package de.yalama.fileencrypter.Crypto.Decryption.Service;
 
 import com.fasterxml.jackson.databind.ser.Serializers;
 import de.yalama.fileencrypter.Crypto.Data.Model.Base64File;
+import de.yalama.fileencrypter.Crypto.Data.Model.Child;
 import de.yalama.fileencrypter.Crypto.Data.Model.ExtendedBase64File;
 import de.yalama.fileencrypter.Crypto.Data.Model.Parent;
 import de.yalama.fileencrypter.Crypto.Key.Model.Key;

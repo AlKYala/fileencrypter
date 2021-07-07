@@ -30,9 +30,16 @@ public class Parent implements Serializable {
     //private FileHandler fileHandler;
     private String fileExtension;
     private String fileName;
+    /**
+     * For some reason the children cannot save their encrypted lengths.
+     * So they have to be saved here.
+     * (Probably a serialization thing because actually only the parent is extracted)
+     */
+    private List<Integer> encryptedLengths;
 
     public Parent() throws NoSuchAlgorithmException {
         this.children = new ArrayList<Child>();
+        this.encryptedLengths = new ArrayList<Integer>();
     }
 
     public static Parent loadParent(String parentPath) throws IOException, ClassNotFoundException {
@@ -48,7 +55,7 @@ public class Parent implements Serializable {
         while(sum < value.length()) {
             int howMuchOfTheValueIsEncrypted = (int) (Math.random() * partLength);
             howMuchOfTheValueIsEncrypted = (sum+howMuchOfTheValueIsEncrypted > value.length()) ? value.length()-(sum) : howMuchOfTheValueIsEncrypted;
-
+            this.encryptedLengths.add(howMuchOfTheValueIsEncrypted);
             String subStringToEncrypt = value.substring(sum, sum+howMuchOfTheValueIsEncrypted);
             child.encryptAndStore(subStringToEncrypt);
             child.setEncryptedLength(howMuchOfTheValueIsEncrypted);
@@ -192,6 +199,7 @@ public class Parent implements Serializable {
         for(Integer index: map.keySet()) {
             this.children.add(index, new Child());
             this.children.get(index).setKey(map.get(index));
+            this.children.get(index).setEncryptedLength(this.encryptedLengths.get(index));
         }
     }
 
@@ -224,7 +232,7 @@ public class Parent implements Serializable {
         for(Child c: this.children) {
             String childSubstring = base64.substring(start, start+c.getEncryptedLength());
             //die childsubstrings sind leer!
-            c.setEncryptedPart(childSubstring);
+            c.setEncryptedPart(base64.substring(start, start+c.getEncryptedLength()));
             System.out.println(c.toString());
             start += c.getEncryptedLength();
         }
