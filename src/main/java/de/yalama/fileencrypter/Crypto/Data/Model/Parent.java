@@ -223,9 +223,9 @@ public class Parent implements Serializable {
         int start = 0;
         for(Child c: this.children) {
             String childSubstring = base64.substring(start, start+c.getEncryptedLength());
-            //debug
-            System.out.println(childSubstring);
+            //die childsubstrings sind leer!
             c.setEncryptedPart(childSubstring);
+            System.out.println(c.toString());
             start += c.getEncryptedLength();
         }
     }
@@ -267,7 +267,11 @@ public class Parent implements Serializable {
     public String decryptAndGetBase64() throws BadPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, IllegalBlockSizeException, ClassNotFoundException, NoSuchPaddingException, InvalidKeyException, IOException {
         StringBuilder sb = new StringBuilder();
         for(Child c : this.children) {
-            sb.append(c.decrypt());
+            //debug
+            String decryptedPart = c.decrypt();
+            sb.append(decryptedPart);
+            System.out.println(decryptedPart);
+            //sb.append(c.decrypt());
         }
         return sb.toString();
     }

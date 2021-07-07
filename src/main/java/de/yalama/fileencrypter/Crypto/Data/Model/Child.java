@@ -61,4 +61,14 @@ public class Child implements Serializable {
         cipher.init(Cipher.DECRYPT_MODE, this.key.getSecretKey(), this.key.getIvParameterSpec());
         return new String(cipher.doFinal(Base64.getDecoder().decode(this.encryptedPart)));
     }
+
+    /**
+     * only used for debug purposes
+     */
+    public String toString() {
+        return String.format("Encrypted part: %s\nKey: %s\nEncrypted length: %d",
+                this.encryptedPart,
+                this.key.toString(),
+                this.encryptedLength);
+    }
 }
