@@ -54,6 +54,9 @@ public class Parent implements Serializable {
         int sum = 0;
         while(sum < value.length()) {
             int howMuchOfTheValueIsEncrypted = (int) (Math.random() * partLength);
+            while(howMuchOfTheValueIsEncrypted % 16 != 0) {
+                howMuchOfTheValueIsEncrypted = (int) (Math.random() * partLength);
+            }
             howMuchOfTheValueIsEncrypted = (sum+howMuchOfTheValueIsEncrypted > value.length()) ? value.length()-(sum) : howMuchOfTheValueIsEncrypted;
             this.encryptedLengths.add(howMuchOfTheValueIsEncrypted);
             String subStringToEncrypt = value.substring(sum, sum+howMuchOfTheValueIsEncrypted);
@@ -194,7 +197,7 @@ public class Parent implements Serializable {
         this.feedKeysToChildren(keyPairMap);
     }
 
-    public void loadKeyMap(Map<Integer, Key> map) {
+    public void loadKeyMap(Map<Integer, Key> map) throws IOException, ClassNotFoundException {
         this.children = new ArrayList<Child>(map.size());
         for(Integer index: map.keySet()) {
             this.children.add(index, new Child());

@@ -58,7 +58,10 @@ public class EncryptionService {
     public String[][] encryptAndGetBase64Values(String base64, String fileName, String fileExtension, double partLength) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, ClassNotFoundException, IOException, BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException, KeyPairNotFoundException, InsecureExtractionException {
         Parent p = new Parent();
         p.encryptBase64AndStore(base64, fileName, fileExtension, partLength);
-        return new String[][]{{p.getBase64(), fileName, fileExtension},
+        String base64Encoded = p.getBase64(); //for debug purposes assign this a variable - the encoded string is wiped after calling this method
+        //debug
+        System.out.printf("Modulo: %d\nLength: %d\n", base64Encoded.length() % 16, base64Encoded.length());
+        return new String[][]{{base64Encoded, fileName, fileExtension},
                 {p.getKeyPairsOfChildrenAsBase64(), "map", "map"}, p.sanitizeAndGetInstanceBase64()};
     }
 
