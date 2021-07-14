@@ -27,12 +27,14 @@ public class Parent implements Serializable {
      */
     //private static KeyPairGenerator generator;
     private List<Child> children;
+    private List<Integer> childrenEncryptedLengths;
     //private FileHandler fileHandler;
     private String fileExtension;
     private String fileName;
 
     public Parent() throws NoSuchAlgorithmException {
         this.children = new ArrayList<Child>();
+        this.childrenEncryptedLengths = new ArrayList<Integer>();
     }
 
     public static Parent loadParent(String parentPath) throws IOException, ClassNotFoundException {
@@ -51,8 +53,8 @@ public class Parent implements Serializable {
 
             String subStringToEncrypt = value.substring(sum, sum+howMuchOfTheValueIsEncrypted);
             child.encryptAndStore(subStringToEncrypt);
-            child.setEncryptedLength(howMuchOfTheValueIsEncrypted);
             this.children.add(child);
+            this.childrenEncryptedLengths.add(child.getEncryptedLength());
             child = new Child();
             sum += howMuchOfTheValueIsEncrypted;
             //debug
@@ -220,10 +222,23 @@ public class Parent implements Serializable {
      */
     public void assignBase64ToChildren(String base64) {
         //TODO hier koennte es schwierigkeiten geben
+        //debug
+        System.out.printf("Assigning\n%s", this.childrenEncryptedLengths.toString());
+
+        int totalSize = 0;
+        for(Integer size: this.childrenEncryptedLengths) {
+            totalSize += size;
+        }
+        System.out.println(totalSize);
+
         int start = 0;
-        for(Child c: this.children) {
+        for(int i = 0; i < children.size(); i++) {
+
+            Child c = children.get(i);
+            c.setEncryptedLength(this.childrenEncryptedLengths.get(i));
             String childSubstring = base64.substring(start, start+c.getEncryptedLength());
-            //die childsubstrings sind leer!
+            //debug
+            System.out.println(childSubstring.length() == c.getEncryptedLength());
             c.setEncryptedPart(childSubstring);
             System.out.println(c.toString());
             start += c.getEncryptedLength();

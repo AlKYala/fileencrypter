@@ -41,13 +41,14 @@ public class Child implements Serializable {
         IvParameterSpec spec = CryptoUtil.generateInitializationVector();
         SecretKey sKey = CryptoUtil.generateKey(toEncrypt, this.generateRandomSalt(toEncrypt));
         this.key.setData(sKey, spec);
-        this.encryptContent(toEncrypt, "AES/CBC/PKCS5Padding");
+        this.encryptContent(toEncrypt, "RC4");
     }
 
     private void encryptContent(String toEncrypt, String algorithm) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, IOException, ClassNotFoundException {
         Cipher cipher = Cipher.getInstance(algorithm);
-        cipher.init(Cipher.ENCRYPT_MODE, this.key.getSecretKey(), this.key.getIvParameterSpec());
+        cipher.init(Cipher.ENCRYPT_MODE, this.key.getSecretKey());
         this.encryptedPart = Base64.getEncoder().encodeToString(cipher.doFinal(toEncrypt.getBytes()));
+        this.encryptedLength = this.encryptedPart.length();
     }
 
     public void clearKey() {
@@ -57,8 +58,9 @@ public class Child implements Serializable {
     public String decrypt() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IOException, ClassNotFoundException {
         //debug
         System.out.println(this.encryptedPart);
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-        cipher.init(Cipher.DECRYPT_MODE, this.key.getSecretKey(), this.key.getIvParameterSpec());
+        Cipher cipher = Cipher.getInstance("RC4");
+        cipher.init(Cipher.DECRYPT_MODE, this.key.getSecretKey());
+        //TODO: LAST UNIT DOES NOT HAVE ENOUGH BITS!
         return new String(cipher.doFinal(Base64.getDecoder().decode(this.encryptedPart)));
     }
 
