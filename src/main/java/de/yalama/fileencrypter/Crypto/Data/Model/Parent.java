@@ -27,19 +27,14 @@ public class Parent implements Serializable {
      */
     //private static KeyPairGenerator generator;
     private List<Child> children;
+    private List<Integer> childrenEncryptedLengths;
     //private FileHandler fileHandler;
     private String fileExtension;
     private String fileName;
-    /**
-     * For some reason the children cannot save their encrypted lengths.
-     * So they have to be saved here.
-     * (Probably a serialization thing because actually only the parent is extracted)
-     */
-    private List<Integer> encryptedLengths;
 
     public Parent() throws NoSuchAlgorithmException {
         this.children = new ArrayList<Child>();
-        this.encryptedLengths = new ArrayList<Integer>();
+        this.childrenEncryptedLengths = new ArrayList<Integer>();
     }
 
     public static Parent loadParent(String parentPath) throws IOException, ClassNotFoundException {
@@ -54,15 +49,12 @@ public class Parent implements Serializable {
         int sum = 0;
         while(sum < value.length()) {
             int howMuchOfTheValueIsEncrypted = (int) (Math.random() * partLength);
-            while(howMuchOfTheValueIsEncrypted % 16 != 0) {
-                howMuchOfTheValueIsEncrypted = (int) (Math.random() * partLength);
-            }
             howMuchOfTheValueIsEncrypted = (sum+howMuchOfTheValueIsEncrypted > value.length()) ? value.length()-(sum) : howMuchOfTheValueIsEncrypted;
-            this.encryptedLengths.add(howMuchOfTheValueIsEncrypted);
+
             String subStringToEncrypt = value.substring(sum, sum+howMuchOfTheValueIsEncrypted);
             child.encryptAndStore(subStringToEncrypt);
-            child.setEncryptedLength(howMuchOfTheValueIsEncrypted);
             this.children.add(child);
+            this.childrenEncryptedLengths.add(child.getEncryptedLength());
             child = new Child();
             sum += howMuchOfTheValueIsEncrypted;
             //debug
@@ -197,12 +189,11 @@ public class Parent implements Serializable {
         this.feedKeysToChildren(keyPairMap);
     }
 
-    public void loadKeyMap(Map<Integer, Key> map) throws IOException, ClassNotFoundException {
+    public void loadKeyMap(Map<Integer, Key> map) {
         this.children = new ArrayList<Child>(map.size());
         for(Integer index: map.keySet()) {
             this.children.add(index, new Child());
             this.children.get(index).setKey(map.get(index));
-            this.children.get(index).setEncryptedLength(this.encryptedLengths.get(index));
         }
     }
 
@@ -231,11 +222,24 @@ public class Parent implements Serializable {
      */
     public void assignBase64ToChildren(String base64) {
         //TODO hier koennte es schwierigkeiten geben
+        //debug
+        System.out.printf("Assigning\n%s", this.childrenEncryptedLengths.toString());
+
+        int totalSize = 0;
+        for(Integer size: this.childrenEncryptedLengths) {
+            totalSize += size;
+        }
+        System.out.println(totalSize);
+
         int start = 0;
-        for(Child c: this.children) {
+        for(int i = 0; i < children.size(); i++) {
+
+            Child c = children.get(i);
+            c.setEncryptedLength(this.childrenEncryptedLengths.get(i));
             String childSubstring = base64.substring(start, start+c.getEncryptedLength());
-            //die childsubstrings sind leer!
-            c.setEncryptedPart(base64.substring(start, start+c.getEncryptedLength()));
+            //debug
+            System.out.println(childSubstring.length() == c.getEncryptedLength());
+            c.setEncryptedPart(childSubstring);
             System.out.println(c.toString());
             start += c.getEncryptedLength();
         }

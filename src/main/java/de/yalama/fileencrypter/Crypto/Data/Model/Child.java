@@ -48,9 +48,7 @@ public class Child implements Serializable {
         Cipher cipher = Cipher.getInstance(algorithm);
         cipher.init(Cipher.ENCRYPT_MODE, this.key.getSecretKey(), this.key.getIvParameterSpec());
         this.encryptedPart = Base64.getEncoder().encodeToString(cipher.doFinal(toEncrypt.getBytes()));
-        System.out.println(toEncrypt.getBytes().length % 16);
-        //debug
-        //System.out.println(this.encryptedPart.length() % 16);
+        this.encryptedLength = this.encryptedPart.length();
     }
 
     public void clearKey() {
@@ -59,9 +57,10 @@ public class Child implements Serializable {
 
     public String decrypt() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IOException, ClassNotFoundException {
         //debug
-        System.out.printf("Modulo: %d - %s", this.encryptedLength % 16, this.encryptedPart);
+        System.out.println(this.encryptedPart);
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, this.key.getSecretKey(), this.key.getIvParameterSpec());
+        //TODO: LAST UNIT DOES NOT HAVE ENOUGH BITS!
         return new String(cipher.doFinal(Base64.getDecoder().decode(this.encryptedPart)));
     }
 
@@ -75,6 +74,3 @@ public class Child implements Serializable {
                 this.encryptedLength);
     }
 }
-
-/**
- */
