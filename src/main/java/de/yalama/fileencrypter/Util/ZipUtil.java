@@ -9,12 +9,6 @@ import java.util.zip.ZipOutputStream;
 
 public class ZipUtil {
 
-    public static void zipMultipleFilesAndGenerateFile(String[][] fileNames, String targetZipFilename) throws IOException, FileNameException {
-        ZipOutputStream zipOutputStream = getZipOutputStreamForMultipleFiles(fileNames, targetZipFilename);
-        zipOutputStream.flush();
-        zipOutputStream.close();
-    }
-
     public static ZipOutputStream getZipOutputStreamForMultipleFiles(String[][] fileNames, String targetZipFilename) throws IOException, FileNameException {
         FileOutputStream fos = new FileOutputStream(String.format("%s.zip", targetZipFilename));
         ZipOutputStream zos = new ZipOutputStream(fos);
@@ -30,15 +24,6 @@ public class ZipUtil {
 
     private static boolean checkIsFileNameIntact(String[] fileNameWithExtension) {
         return fileNameWithExtension != null && fileNameWithExtension.length == 2;
-    }
-
-    public static ZipOutputStream getZipOutputStreamForMultipleFiles(String[] fileNames, String targetZipFilename) throws IOException {
-        FileOutputStream fos = new FileOutputStream(String.format("%s.zip", targetZipFilename));
-        ZipOutputStream zos = new ZipOutputStream(fos);
-        for(int i = 0; i < fileNames.length; i++) {
-            zos.putNextEntry(ZipUtil.fileToZipEntry(fileNames[i]));
-        }
-        return zos;
     }
 
     public static ZipEntry fileToZipEntry(String fileName, String fileExtension) {

@@ -21,27 +21,14 @@ import java.util.*;
 @Setter
 public class Parent implements Serializable {
 
-    /**
-     * The generator can be singleton because we dont need n instances of KeyPairGenerator - only one per runtime
-     * KeyPairGenerator is not serializable so this is a good strategy that saves some memory
-     */
-    //private static KeyPairGenerator generator;
     private List<Child> children;
     private List<Integer> childrenEncryptedLengths;
-    //private FileHandler fileHandler;
     private String fileExtension;
     private String fileName;
 
     public Parent() throws NoSuchAlgorithmException {
         this.children = new ArrayList<Child>();
         this.childrenEncryptedLengths = new ArrayList<Integer>();
-    }
-
-    public static Parent loadParent(String parentPath) throws IOException, ClassNotFoundException {
-        File parentFile = new File(parentPath);
-        FileInputStream fileInputStream = new FileInputStream(parentFile);
-        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-        return (Parent) objectInputStream.readObject();
     }
 
     public void encryptAndStoreValue(String value, double partLength) throws NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, InvalidKeyException, IllegalBlockSizeException, InvalidKeySpecException, InvalidAlgorithmParameterException, IOException, ClassNotFoundException {
@@ -57,25 +44,13 @@ public class Parent implements Serializable {
             this.childrenEncryptedLengths.add(child.getEncryptedLength());
             child = new Child();
             sum += howMuchOfTheValueIsEncrypted;
-            //debug
-            System.out.println(sum);
         }
-    }
-
-    public void encryptAndStoreValue(String value) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException, InvalidKeySpecException, InvalidAlgorithmParameterException, IOException, ClassNotFoundException {
-        this.encryptAndStoreValue(value, 5000d);
     }
 
     public void encryptBase64AndStore(String base64, String fileName, String fileExtension, double partLength) throws IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException, BadPaddingException, InvalidKeySpecException, IllegalBlockSizeException, ClassNotFoundException {
         this.encryptAndStoreValue(base64, partLength);
         this.fileExtension = fileExtension;
         this.fileName = fileName;
-    }
-
-    public void encryptFileAndStore(File file, double partLength) throws IllegalBlockSizeException, NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException, ClassNotFoundException, InvalidAlgorithmParameterException, InvalidKeySpecException, IOException {
-        String fileAsBase64 = FileUtil.fileToBase64String(file);
-        this.fileExtension = FileUtil.getExtensionFromFullFileName(file);
-        this.encryptAndStoreValue(fileAsBase64, partLength);
     }
 
     /**
@@ -221,15 +196,10 @@ public class Parent implements Serializable {
      * Used in the decryption process - assigns the encrypted string to children
      */
     public void assignBase64ToChildren(String base64) {
-        //TODO hier koennte es schwierigkeiten geben
-        //debug
-        System.out.printf("Assigning\n%s", this.childrenEncryptedLengths.toString());
-
         int totalSize = 0;
         for(Integer size: this.childrenEncryptedLengths) {
             totalSize += size;
         }
-        System.out.println(totalSize);
 
         int start = 0;
         for(int i = 0; i < children.size(); i++) {
@@ -237,10 +207,7 @@ public class Parent implements Serializable {
             Child c = children.get(i);
             c.setEncryptedLength(this.childrenEncryptedLengths.get(i));
             String childSubstring = base64.substring(start, start+c.getEncryptedLength());
-            //debug
-            System.out.println(childSubstring.length() == c.getEncryptedLength());
             c.setEncryptedPart(childSubstring);
-            System.out.println(c.toString());
             start += c.getEncryptedLength();
         }
     }
@@ -282,11 +249,8 @@ public class Parent implements Serializable {
     public String decryptAndGetBase64() throws BadPaddingException, InvalidAlgorithmParameterException, NoSuchAlgorithmException, IllegalBlockSizeException, ClassNotFoundException, NoSuchPaddingException, InvalidKeyException, IOException {
         StringBuilder sb = new StringBuilder();
         for(Child c : this.children) {
-            //debug
             String decryptedPart = c.decrypt();
             sb.append(decryptedPart);
-            System.out.println(decryptedPart);
-            //sb.append(c.decrypt());
         }
         return sb.toString();
     }
@@ -299,13 +263,3 @@ public class Parent implements Serializable {
         Base64Util.base64StringToFile(this.decryptAndGetBase64(), fileName, this.fileExtension);
     }
 }
-
-/**
- * VERY IMPORTANT: WHEN EXPORTING PARENT, THE KEYPAIR OF CHILDREN IS SET NULL!!!
- * A MAP OF KEYPAIRS IS SAVED SEPERATELY TO A FILE WITH CONTENT
- * <Integer, Keypair> - the key says which child has what keypair!
- *
- * When writing to a file, first the keypair is extracted then the parent
- *
- * Let FileHandler handle all
- */

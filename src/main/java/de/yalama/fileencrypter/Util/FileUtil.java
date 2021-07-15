@@ -49,17 +49,7 @@ public class FileUtil {
 
     public static String getExtensionFromFullFileName(String fullFileName) {
         String[] split = fullFileName.split("[.]");
-        //debug
-        //System.out.println(Arrays.toString(split));
         return (split.length < 2) ? ".txt" : split[split.length-1];
-    }
-
-    public static String[] getFileNameAndExtensionFromFullFileName(String fullFileName) {
-        return fullFileName.split("[.]");
-    }
-
-    public static String getExtensionFromFullFileName(File file) {
-        return FileUtil.getExtensionFromFullFileName(file.getAbsolutePath());
     }
 
     static void byteArrToFile(byte[] arr, String fileName) {

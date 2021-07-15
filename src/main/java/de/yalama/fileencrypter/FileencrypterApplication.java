@@ -17,13 +17,7 @@ import java.security.spec.InvalidKeySpecException;
 @SpringBootApplication
 public class FileencrypterApplication {
 
-    //just testing here
-    public static void main(String[] args) throws NoSuchPaddingException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, KeyPairNotFoundException, IOException, InsecureExtractionException, ClassNotFoundException, InvalidKeySpecException, InvalidAlgorithmParameterException {
+    public static void main(String[] args) {
         SpringApplication.run(FileencrypterApplication.class, args);
-        /*Parent p = new Parent();
-        p.encryptFileAndStore("jjwt-0.9.1.jar", 500000);
-        p.extractAll("map", "testObject");
-        p.loadKeyMap("map.map");
-        p.decryptAndWriteToFile("test");*/
     }
 }

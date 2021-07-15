@@ -13,8 +13,6 @@ import java.util.Base64;
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 
-//@Getter
-
 /**
  * The idea behind this is that one Parent has n children that each hold data of the encrypted data
  * They have different keys to decrypt the information
@@ -56,11 +54,8 @@ public class Child implements Serializable {
     }
 
     public String decrypt() throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IOException, ClassNotFoundException {
-        //debug
-        System.out.println(this.encryptedPart);
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(Cipher.DECRYPT_MODE, this.key.getSecretKey(), this.key.getIvParameterSpec());
-        //TODO: LAST UNIT DOES NOT HAVE ENOUGH BITS!
         return new String(cipher.doFinal(Base64.getDecoder().decode(this.encryptedPart)));
     }
 

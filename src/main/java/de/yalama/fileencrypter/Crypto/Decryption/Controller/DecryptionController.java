@@ -26,8 +26,6 @@ public class DecryptionController {
     @CrossOrigin(origins =  "http://localhost:8080")
     @PostMapping("/bundle")
     public Base64File decrypt(@RequestBody ExtendedBase64File extendedBase64File) throws NoSuchAlgorithmException, IllegalBlockSizeException, InvalidKeyException, IOException, BadPaddingException, NoSuchPaddingException, InvalidAlgorithmParameterException, ClassNotFoundException {
-        //debug
-        System.out.println(extendedBase64File.getContent().getBase64().length());
         return this.decryptionService.decryptEncryptedBase64File(extendedBase64File);
     }
 }

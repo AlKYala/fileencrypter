@@ -42,17 +42,6 @@ public class EncryptionController {
     @Autowired
     private EncryptionService encryptionService;
 
-    /**
-     * Prototype, this isnt the final way to do things but
-     * @param file the file to encrypt
-     * @return An array of files (by default of size 2) where the first index holds the key for the file
-     * and the second the encrypted content itself
-     */
-    @CrossOrigin(origins =  "http://localhost:8080")
-    @PostMapping("/single")
-    public String[][] downloadAndEncrypt(@RequestParam("file") MultipartFile file) throws NoSuchAlgorithmException, IOException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, ClassNotFoundException, InsecureExtractionException, KeyPairNotFoundException, FileNameException {
-        return this.encryptionService.encrypt(file);
-    }
 
     @CrossOrigin(origins =  "http://localhost:8080")
     @PostMapping("/singlebase64")
@@ -60,6 +49,3 @@ public class EncryptionController {
         return encryptionService.encryptAndGetBase64Values(info.getBase64(), info.getFileName(), info.getFileExtension(), 50000d);
     }
 }
-
-//TODO in later versions - if multiple files are uploaded zip them together first then encrypt the zip
-//note - pass base64 to FrontEnd, let front end handle it.

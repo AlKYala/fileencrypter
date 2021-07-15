@@ -26,41 +26,10 @@ import java.util.List;
 @Service
 public class EncryptionService {
 
-    public String[][] encrypt(MultipartFile file) throws IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidAlgorithmParameterException, NoSuchPaddingException, BadPaddingException, InsecureExtractionException, KeyPairNotFoundException, InvalidKeySpecException, IllegalBlockSizeException, ClassNotFoundException {
-        String[] names = FileUtil.getFileNameAndExtensionFromFullFileName(file.getOriginalFilename());
-        //debug
-        System.out.printf("%s \n%s\n", names[0], names[1]);
-        return this.encryptAndGetBase64Values(Base64.getEncoder().encodeToString(file.getBytes()), names[0], names[1], 5000000d);
-    }
-
-    /**
-     * A method to handle
-     * @param file The file to encrypt
-     * @param partLength The file to encrypt is split in to many parts - this parameter specifies how long
-     *                   each part should be
-     * @return An array of files (by default of size 2) where the first index holds the key for the file
-     * and the second the encrypted content itself
-     */
-    public void encrypt(File file, String fileName, String fileExtension, double partLength) throws NoSuchAlgorithmException, IOException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, ClassNotFoundException, InsecureExtractionException, KeyPairNotFoundException {
-        this.encrypt(FileUtil.fileToBase64String(file), fileName, fileExtension, partLength);
-    }
-
-    public void encrypt(byte[] arr, String fileName, String fileExtension, double partLength) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, KeyPairNotFoundException, ClassNotFoundException, InsecureExtractionException {
-        this.encrypt(Base64Util.byteArrToBase64(arr), fileName, fileExtension, partLength);
-    }
-
-    public void encrypt(String base64, String fileName, String fileExtension, double partLength) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, ClassNotFoundException, IOException, BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException, InsecureExtractionException, KeyPairNotFoundException {
-        Parent p = new Parent();
-        p.encryptBase64AndStore(base64, fileName, fileExtension, partLength);
-        p.extractAll("map", "encrypted.file");
-    }
-
     public String[][] encryptAndGetBase64Values(String base64, String fileName, String fileExtension, double partLength) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, ClassNotFoundException, IOException, BadPaddingException, IllegalBlockSizeException, NoSuchPaddingException, InvalidKeyException, InvalidKeySpecException, KeyPairNotFoundException, InsecureExtractionException {
         Parent p = new Parent();
         p.encryptBase64AndStore(base64, fileName, fileExtension, partLength);
-        String base64Encoded = p.getBase64(); //for debug purposes assign this a variable - the encoded string is wiped after calling this method
-        //debug
-        System.out.printf("Modulo: %d\nLength: %d\n", base64Encoded.length() % 16, base64Encoded.length());
+        String base64Encoded = p.getBase64();
         return new String[][]{{base64Encoded, fileName, fileExtension},
                 {p.getKeyPairsOfChildrenAsBase64(), "map", "map"}, p.sanitizeAndGetInstanceBase64()};
     }
@@ -77,7 +46,3 @@ public class EncryptionService {
         return base64Files;
     }
 }
-
-/**
- * TODO find a better way to handle files for upload - right now: write files to drive, then offer as download
- */

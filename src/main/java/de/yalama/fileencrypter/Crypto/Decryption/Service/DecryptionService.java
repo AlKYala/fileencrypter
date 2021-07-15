@@ -38,8 +38,6 @@ public class DecryptionService {
         Parent p = (Parent) ByteUtil.byteArrToObject(parentByteArr);
         p.loadKeyMap(keyMap);
         p.assignBase64ToChildren(extendedBase64File.getContent().getBase64());
-        //debug
-
         return new Base64File(p.decryptAndGetBase64(), extendedBase64File.getContent().getFileName(), extendedBase64File.getContent().getFileExtension());
 
         /**
