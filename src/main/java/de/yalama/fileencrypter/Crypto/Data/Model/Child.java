@@ -38,8 +38,8 @@ public class Child implements Serializable {
      *
      * @param toEncrypt The part that has to be encrypted
      * @throws Exception in place of: NoSuchAlgorithmException, InvalidAlgorithmParameterException,
-     * InvalidKeyException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException,
-     * InvalidKeySpecException, IOException, ClassNotFoundException
+     *                   InvalidKeyException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException,
+     *                   InvalidKeySpecException, IOException, ClassNotFoundException
      */
     public void encryptAndStore(String toEncrypt) throws Exception {
         IvParameterSpec spec = CryptoUtil.generateInitializationVector();
@@ -50,6 +50,7 @@ public class Child implements Serializable {
 
     /**
      * Generates salt for encryption based on the part-string it has to encrypt
+     *
      * @param toEncrypt the part this child has to encrypt
      * @return random generated salt
      */
@@ -61,11 +62,12 @@ public class Child implements Serializable {
     /**
      * Encrypts the string to store in this instance (in Encrypted form)
      * assigns member variables the values
+     *
      * @param toEncrypt The string to encrypt in this instance
      * @param algorithm The encryption algorithm
      * @throws Exception in place of: NoSuchAlgorithmException, InvalidAlgorithmParameterException,
-     * InvalidKeyException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException,
-     * InvalidKeySpecException, IOException, ClassNotFoundException
+     *                   InvalidKeyException, NoSuchPaddingException, BadPaddingException, IllegalBlockSizeException,
+     *                   InvalidKeySpecException, IOException, ClassNotFoundException
      */
     private void encryptContent(String toEncrypt, String algorithm) throws Exception {
         Cipher cipher = Cipher.getInstance(algorithm);
@@ -84,10 +86,11 @@ public class Child implements Serializable {
     /**
      * Decrypts the encrypted String saved before
      * Decryption only happens after contents are loaded and values are assigned
+     *
      * @return returns the decrypted (original) string
      * @throws Exception in place of: IllegalBlockSizeException, InvalidKeyException, BadPaddingException,
-     * NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-     * IOException, ClassNotFoundException
+     *                   NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+     *                   IOException, ClassNotFoundException
      */
     public String decrypt() throws Exception {
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
