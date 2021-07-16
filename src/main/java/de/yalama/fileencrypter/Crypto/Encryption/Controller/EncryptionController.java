@@ -26,9 +26,18 @@ public class EncryptionController {
     @Autowired
     private EncryptionService encryptionService;
 
+    /**
+     * @param info Takes data for a Base64File object, encrypts it
+     * @return A 2d String consisting of data for a file (in front end)
+     * @throws Exception in place of IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
+     *                   InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException,
+     *                   BadPaddingException, KeyPairNotFoundException,
+     *                   ClassNotFoundException, InsecureExtractionException
+     */
     @CrossOrigin(origins = "http://localhost:8080")
     @PostMapping("/singlebase64")
-    public String[][] downloadAndEncryptBase64(@RequestBody Base64File info) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, KeyPairNotFoundException, ClassNotFoundException, InsecureExtractionException {
-        return encryptionService.encryptAndGetBase64Values(info.getBase64(), info.getFileName(), info.getFileExtension(), 50000d);
+    public String[][] downloadAndEncryptBase64(@RequestBody Base64File info) throws Exception {
+        return encryptionService.encryptAndGetBase64Values(info.getBase64(), info.getFileName(),
+                info.getFileExtension(), 50000d);
     }
 }
