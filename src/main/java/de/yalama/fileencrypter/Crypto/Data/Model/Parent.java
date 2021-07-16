@@ -5,7 +5,6 @@ import de.yalama.fileencrypter.Exceptions.KeyPairNotFoundException;
 import de.yalama.fileencrypter.Crypto.Key.Model.Key;
 import de.yalama.fileencrypter.Util.Base64Util;
 import de.yalama.fileencrypter.Util.ByteUtil;
-import de.yalama.fileencrypter.Util.FileUtil;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -51,40 +50,6 @@ public class Parent implements Serializable {
         this.encryptAndStoreValue(base64, partLength);
         this.fileExtension = fileExtension;
         this.fileName = fileName;
-    }
-
-    /**
-     * first extracts the keypairMap to a seperate file, then clears the keyPair from all children
-     * for safety reasons then extracts the parent
-     * @param mapFileName The filename for the map
-     * @param parentFileName The filename for the parent
-     */
-    public void extractAll(String mapFileName, String parentFileName) throws IOException, KeyPairNotFoundException, InsecureExtractionException {
-        this.extractKeyMap(mapFileName);
-        this.clearKeyPairsOfChildren();
-        this.extractParent(parentFileName);
-    }
-
-    /**
-     * Method to extract this instance but checks if this instance children has no keypair saved for
-     * safety reasons
-     * @param fileName the filename for this instance
-     * @throws IOException
-     */
-    private void extractParent(String fileName) throws IOException, InsecureExtractionException {
-        if(!this.checkChildrenAllClear()) {
-            throw new InsecureExtractionException("This instance has children with keypair instances left. Cannot extract for safety reasons");
-        }
-        FileOutputStream fileOutputStream = null;
-        try {
-            fileOutputStream = new FileOutputStream(fileName);
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(this);
-            objectOutputStream.close();
-            fileOutputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -138,42 +103,10 @@ public class Parent implements Serializable {
         }
     }
 
-    /**
-     * Extracts the keyMap specified in Parent::getPairOfChildren to a File
-     * @param fileName The filename
-     * @throws IOException
-     * @throws KeyPairNotFoundException
-     */
-    private void extractKeyMap(String fileName) throws IOException, KeyPairNotFoundException {
-        FileUtil.anyObjectToFile(this.getKeyPairsOfChildren(), fileName, "map");
-    }
-
-    public void loadKeyMap(String mapFilePath) throws IOException, ClassNotFoundException {
-        File keyMapFile = new File(mapFilePath);
-        this.loadKeyMapData(keyMapFile);
-    }
-
-    /**
-     * Method to load the keyMapFile and assign the child instances in Parent::children their instances
-     * @param keyMapFile
-     */
-    private void loadKeyMapData(File keyMapFile) throws IOException, ClassNotFoundException {
-        FileInputStream fileInputStream = new FileInputStream(keyMapFile);
-        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-        Map<Integer, Key> keyPairMap = (Map<Integer, Key>) objectInputStream.readObject();
-        this.feedKeysToChildren(keyPairMap);
-    }
-
     public void loadKeyMap(Map<Integer, Key> map) {
         this.children = new ArrayList<Child>(map.size());
         for(Integer index: map.keySet()) {
             this.children.add(index, new Child());
-            this.children.get(index).setKey(map.get(index));
-        }
-    }
-
-    private void feedKeysToChildren(Map<Integer, Key> map) {
-        for(Integer index : map.keySet()) {
             this.children.get(index).setKey(map.get(index));
         }
     }
@@ -253,13 +186,5 @@ public class Parent implements Serializable {
             sb.append(decryptedPart);
         }
         return sb.toString();
-    }
-
-    public void decryptAndWriteToFile(String fileName) throws BadPaddingException, InvalidKeyException, NoSuchAlgorithmException, IllegalBlockSizeException, IOException, NoSuchPaddingException, InvalidAlgorithmParameterException, ClassNotFoundException {
-        if(fileExtension.equals(".txt")) {
-            FileUtil.writeFilePlainText(this.decryptAndGetBase64(), fileName, this.fileExtension);
-            return;
-        }
-        Base64Util.base64StringToFile(this.decryptAndGetBase64(), fileName, this.fileExtension);
     }
 }

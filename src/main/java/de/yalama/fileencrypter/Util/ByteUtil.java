@@ -54,10 +54,6 @@ public class ByteUtil {
         return ret;
     }
 
-    public static String byteArrToBase64(byte[] arr) {
-        return Base64.getEncoder().encodeToString(arr);
-    }
-
     public static byte[] base64ToByteArr(String base64) {
         return Base64.getDecoder().decode(base64);
     }
