@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * The idea is to bundle Parent and Map in one instance to make storing the "frame" data easier
@@ -14,11 +15,11 @@ import java.io.IOException;
 
 @Getter
 @Setter
-public class DataFrame {
-    private String parentBase64;
+public class DataFrame implements Serializable {
     private String mapBase64;
+    private String parentBase64;
 
-    public DataFrame(String parentBase64, String mapBase64) {
+    public DataFrame(String mapBase64, String parentBase64) {
         this.parentBase64 = parentBase64;
         this.mapBase64 = mapBase64;
     }

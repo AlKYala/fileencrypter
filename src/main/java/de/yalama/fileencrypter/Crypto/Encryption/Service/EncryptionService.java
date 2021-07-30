@@ -1,6 +1,7 @@
 package de.yalama.fileencrypter.Crypto.Encryption.Service;
 
 
+import de.yalama.fileencrypter.Crypto.Data.Model.Child;
 import de.yalama.fileencrypter.Crypto.Data.Model.Parent;
 import de.yalama.fileencrypter.Crypto.Key.Model.DataFrame;
 import de.yalama.fileencrypter.Exceptions.InsecureExtractionException;
@@ -42,7 +43,7 @@ public class EncryptionService {
         Parent p = new Parent();
         p.encryptBase64AndStore(base64, fileName, fileExtension, partLength);
         String base64Encoded = p.getBase64();
-        DataFrame frame = new DataFrame(p.sanitizeAndGetInstanceBase64(), p.getKeyPairsOfChildrenAsBase64());
+        DataFrame frame = new DataFrame(p.getKeyPairsOfChildrenAsBase64(), p.sanitizeAndGetInstanceBase64());
         return new String[][]{{base64Encoded, fileName, fileExtension},
                 {frame.getBase64(), "frame", "frame"}};
     }
