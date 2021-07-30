@@ -10,6 +10,5 @@ import lombok.Setter;
 @Setter
 public class ExtendedBase64File {
     private Base64File content;
-    private Base64File key;
-    private Base64File parent;
+    private Base64File frame;
 }

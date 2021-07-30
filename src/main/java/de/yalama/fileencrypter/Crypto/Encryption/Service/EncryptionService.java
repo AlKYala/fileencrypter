@@ -42,10 +42,8 @@ public class EncryptionService {
         Parent p = new Parent();
         p.encryptBase64AndStore(base64, fileName, fileExtension, partLength);
         String base64Encoded = p.getBase64();
-        DataFrame frame = new DataFrame();
-        frame.setParentBase64(p.sanitizeAndGetInstanceBase64());
-        frame.setMapBase64(p.getKeyPairsOfChildrenAsBase64());
+        DataFrame frame = new DataFrame(p.sanitizeAndGetInstanceBase64(), p.getKeyPairsOfChildrenAsBase64());
         return new String[][]{{base64Encoded, fileName, fileExtension},
-                {p.getKeyPairsOfChildrenAsBase64(), "map", "map"}};
+                {frame.getBase64(), "frame", "frame"}};
     }
 }
