@@ -5,6 +5,7 @@ import de.yalama.fileencrypter.Crypto.Data.Model.Base64File;
 import de.yalama.fileencrypter.Crypto.Data.Model.Child;
 import de.yalama.fileencrypter.Crypto.Data.Model.ExtendedBase64File;
 import de.yalama.fileencrypter.Crypto.Data.Model.Parent;
+import de.yalama.fileencrypter.Crypto.Key.Model.DataFrame;
 import de.yalama.fileencrypter.Crypto.Key.Model.Key;
 import de.yalama.fileencrypter.Util.ByteUtil;
 import de.yalama.fileencrypter.Util.FileUtil;
@@ -34,10 +35,13 @@ public class DecryptionService {
      *                   IOException
      */
     public Base64File decryptEncryptedBase64File(ExtendedBase64File extendedBase64File) throws Exception {
-        byte[] mapByteArr = ByteUtil.base64ToByteArr(extendedBase64File.getKey().getBase64());
+        byte[] dataFrameByteArr = ByteUtil.base64ToByteArr(extendedBase64File.getFrame().getBase64());
+        DataFrame frame = (DataFrame) ByteUtil.byteArrToObject(dataFrameByteArr);
+
+        byte[] mapByteArr = ByteUtil.base64ToByteArr(frame.getMapBase64());
         Map<Integer, Key> keyMap = ByteUtil.byteArrToKeyMap(mapByteArr);
 
-        byte[] parentByteArr = ByteUtil.base64ToByteArr(extendedBase64File.getParent().getBase64());
+        byte[] parentByteArr = ByteUtil.base64ToByteArr(frame.getParentBase64());
         Parent p = (Parent) ByteUtil.byteArrToObject(parentByteArr);
         p.loadKeyMap(keyMap);
         p.assignBase64ToChildren(extendedBase64File.getContent().getBase64());
