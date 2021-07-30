@@ -2,6 +2,7 @@ package de.yalama.fileencrypter.Crypto.Encryption.Service;
 
 
 import de.yalama.fileencrypter.Crypto.Data.Model.Parent;
+import de.yalama.fileencrypter.Crypto.Key.Model.DataFrame;
 import de.yalama.fileencrypter.Exceptions.InsecureExtractionException;
 import de.yalama.fileencrypter.Exceptions.KeyPairNotFoundException;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,10 @@ public class EncryptionService {
         Parent p = new Parent();
         p.encryptBase64AndStore(base64, fileName, fileExtension, partLength);
         String base64Encoded = p.getBase64();
+        DataFrame frame = new DataFrame();
+        frame.setParentBase64(p.sanitizeAndGetInstanceBase64());
+        frame.setMapBase64(p.getKeyPairsOfChildrenAsBase64());
         return new String[][]{{base64Encoded, fileName, fileExtension},
-                {p.getKeyPairsOfChildrenAsBase64(), "map", "map"}, p.sanitizeAndGetInstanceBase64()};
+                {p.getKeyPairsOfChildrenAsBase64(), "map", "map"}};
     }
 }

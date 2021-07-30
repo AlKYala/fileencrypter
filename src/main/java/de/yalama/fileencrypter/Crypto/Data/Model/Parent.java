@@ -216,13 +216,13 @@ public class Parent implements Serializable {
      * @throws InsecureExtractionException
      * @throws IOException
      */
-    public String[] sanitizeAndGetInstanceBase64() throws InsecureExtractionException, IOException {
+    public String sanitizeAndGetInstanceBase64() throws InsecureExtractionException, IOException {
         this.sanitize();
         if (!this.checkParentCanBeExtracted()) {
             throw new InsecureExtractionException("The parent cannot be extracted before the encrypted parts and keys are removed");
         }
         byte[] parentAsByteArr = ByteUtil.anyObjectToByteArr(this);
-        return new String[]{Base64Util.byteArrToBase64(parentAsByteArr), "parent", "parent"};
+        return Base64Util.byteArrToBase64(parentAsByteArr);
     }
 
     /**
